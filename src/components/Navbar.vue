@@ -1,0 +1,43 @@
+<template>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" @click.prevent="logout">登出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</template>
+
+<script>
+export default {
+    methods: {
+        logout() {
+            const api = `${process.env.VUE_APP_API}logout`;
+            // console.log(api);
+            // 第一個是路徑 第二個是送出的資料
+            this.$http.post(api, this.user)
+            .then((res) => {
+                if (res.data.success) {
+                    // console.log(res);
+                    this.$router.push('/login');
+                }
+            });
+        }
+    }
+}
+</script>
