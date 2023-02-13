@@ -98,7 +98,7 @@ export default {
                 } else {
                     this.shown = false;
                 }
-                console.log(res);
+                console.log(res.data);
             });
         },
         openModal(isNew, item) {
