@@ -49,12 +49,15 @@
     <DelModal ref="delModal"
     :item="tempProduct"
     @del-product="delProduct"></DelModal>
+    <Pages :pages="pagination"
+    @emit-pages="getProducts"></Pages>
 </template>
 
 <script>
 import ProductModal from '../components/ProductModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
+import Pages from '../components/PagesList.vue';
 
 export default {
     data() {
@@ -64,31 +67,38 @@ export default {
             tempProduct: {},
             isNew: false,
             isLoading: false,
+            shown: false,
         };
     },
     components: {
         ProductModal,
         DelModal,
         Toast,
+        Pages,
     },
     inject: ['emitter'],
     methods: {
-        getProducts() {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`;
-            // console.log(api);
+        getProducts( page = 1 ) {
+            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.get(api)
             .then((res) => {
                 if (res.data.success) {
                     this.isLoading = false;
-                    this.emitter.emit('push-message', {
-                        style: 'success',
-                        title: '登入成功',
-                    });
+                    if (!this.shown) {
+                        this.emitter.emit('push-message', {
+                            style: 'success',
+                            title: '登入成功',
+                        });
+                        this.shown = true;
+                    }
                     this.products = res.data.products;
                     this.pagination = res.data.pagination;
+                } else {
+                    this.shown = false;
                 }
+                console.log(res);
             });
         },
         openModal(isNew, item) {
@@ -123,7 +133,7 @@ export default {
             this.$http[httpMethod](api, { data: this.tempProduct })
             .then((response) => {
                 this.isLoading = false;
-                console.log(response);
+                // console.log(response);
                 productComponent.hideModal();
                 // 傳送API訊息至吐司元件
                 if (response.data.success) {
@@ -152,7 +162,11 @@ export default {
                 console.log(response.data);
                 delComponent.hideModal();
                 this.getProducts();
-            });
+                this.emitter.emit('push-message', {
+                        style: 'danger',
+                        title: '刪除成功',
+                })
+            })
         },
     },
     created() {
