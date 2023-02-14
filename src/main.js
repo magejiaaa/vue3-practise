@@ -9,7 +9,7 @@ import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
 import { currency } from './methods/filters'
 // import { apply } from 'core-js/fn/reflect'
 
-const pinia = createPinia;
+const pinia = createPinia();
 
 const app = createApp(App);
 app.config.globalProperties.$filters = {
