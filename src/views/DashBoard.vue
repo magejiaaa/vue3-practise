@@ -10,6 +10,11 @@ import Navbar from "../components/Navbar.vue";
 import emitter from '@/methods/emitter';
 
 export default {
+    data() {
+        return {
+            productData: [],
+        };
+    },
     components: {
         Navbar,
     },
