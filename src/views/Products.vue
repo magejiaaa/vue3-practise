@@ -42,7 +42,7 @@
     </table>
     <ProductModal ref="productModal" :product="tempProduct" @update-product="updatedProduct"></ProductModal>
     <DelModal ref="delModal" :item="tempProduct" @del-product="delProduct"></DelModal>
-    <Pages :pages="pagination" @emit-pages="getProducts"></Pages>
+<Pages :pages="pagination" @emit-pages="getProducts"></Pages>
 </template>
 
 <script>
@@ -50,6 +50,13 @@ import ProductModal from '../components/ProductModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
+import { useProductStore } from '../stores/store.js';
+// import { storeToRefs } from 'pinia';
+
+
+// 解構使用的話
+// const { products } = storeToRefs(productStore);
+// console.log(products);
 
 export default {
     data() {
@@ -79,6 +86,8 @@ export default {
                         this.isLoading = false;
                         this.products = res.data.products;
                         this.pagination = res.data.pagination;
+                        const productStore = useProductStore();
+                        productStore.addProduct(this.products);
                     }
                 });
         },
