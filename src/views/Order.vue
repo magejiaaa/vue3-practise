@@ -55,15 +55,15 @@ import OrderModal from '../components/OrderModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
-import { mapState } from 'pinia';
 import { useProductStore } from '@/stores/store';
+import { mapState } from 'pinia';
 
 
 export default {
     data() {
         return {
             orders: [],
-            localProducts: [],
+            Products: [],
             pagination: {},
             tempOrder: {},
             isNew: false,
@@ -77,6 +77,11 @@ export default {
         Pages,
     },
     inject: ['emitter'],
+    computed: {
+        ...mapState(useProductStore, {
+            localProducts: 'products',
+        })
+    },
     methods: {
         getOrders(page = 1) {
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
@@ -86,8 +91,8 @@ export default {
                 .then((res) => {
                     if (res.data.success) {
                         this.isLoading = false;
-                        // this.products = res.data.products;
                         this.pagination = res.data.pagination;
+                        this.Products = this.localProducts;
                     }
                 });
         },
@@ -161,11 +166,6 @@ export default {
     },
     created() {
         this.getOrders();
-    },
-    computed: {
-        ...mapState(useProductStore, {
-            products: state => state.products,
-        }),
     },
 }
 </script>

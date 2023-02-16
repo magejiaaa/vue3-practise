@@ -11,13 +11,12 @@ import { currency } from './methods/filters'
 
 
 const app = createApp(App);
-const pinia = createPinia();
 app.config.globalProperties.$filters = {
     currency,
 };
 app.use(VueAxios, axios);
 app.use(router);
 app.component('Loading',Loading);
-app.use(pinia);
+app.use(createPinia());
 app.mount('#app');
 
