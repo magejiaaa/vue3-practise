@@ -29,8 +29,7 @@
                 </td>
                 <td>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" 
-                        :checked="item.is_paid" id="is_paid">
+                        <input class="form-check-input" type="checkbox" :checked="item.is_paid" id="is_paid">
                         <label class="form-check-label" for="is_paid" v-if="item.is_paid">已付款
                         </label>
                         <label class="form-check-label" for="is_paid" v-else>未付款
@@ -56,11 +55,15 @@ import OrderModal from '../components/OrderModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
+import { mapState } from 'pinia';
+import { useProductStore } from '@/stores/store';
+
 
 export default {
     data() {
         return {
             orders: [],
+            localProducts: [],
             pagination: {},
             tempOrder: {},
             isNew: false,
@@ -83,10 +86,9 @@ export default {
                 .then((res) => {
                     if (res.data.success) {
                         this.isLoading = false;
-                        this.products = res.data.products;
+                        // this.products = res.data.products;
                         this.pagination = res.data.pagination;
                     }
-                    console.log(res.data);
                 });
         },
         openModal(isNew, item) {
@@ -159,6 +161,11 @@ export default {
     },
     created() {
         this.getOrders();
+    },
+    computed: {
+        ...mapState(useProductStore, {
+            products: state => state.products,
+        }),
     },
 }
 </script>
