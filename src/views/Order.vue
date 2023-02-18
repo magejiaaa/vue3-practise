@@ -18,7 +18,7 @@
                 <td>{{ item.create_at }}</td>
                 <td>{{ item.user.email }}</td>
                 <td class="text-right" v-for="product in item.products" :key="product.id">
-                    {{ getProductTitle(product.product_id) }}
+                    {{ product.name && product.name.title }} {{ product.qty }}/{{ product.name && product.name.category }}
                 </td>
                 <td class="text-right">
                     {{ $filters.currency(item.total) }}
@@ -130,12 +130,12 @@ export default {
     //     this.productsList = this.localProducts;
     // },
     methods: {
-        getProductTitle(productId) {
-            // console.log("Products:", this.Products);
-            // 傳入訂單ID
-            const product = this.productsList.filter((item) => item.id === productId);
-            console.log(product)
-            return product ? product.title : "Unknown";
+        // 定義一個接受 productsList 參數的 getProductTitle 函數
+        getProductTitle(productId, productsList) {
+            const product = productsList.find((item) => item.id === productId);
+            console.log('getProductTitle', product);
+            return product ? product : "Unknown";
+            // return product || { id: productId, title: "Unknown" };
         },
         getOrders(page = 1) {
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
@@ -147,8 +147,15 @@ export default {
                         this.isLoading = false;
                         // this.orders = res.data.orders;
                         this.pagination = res.data.pagination;
+                        this.productsList = this.localProducts;
+                        this.orders.forEach((order) => {
+                            // 帶入的product為當筆訂單的products
+                            Object.values(order.products).forEach((product) => {
+                                product.name = this.getProductTitle(product.product_id, this.productsList);
+                            });
+                        });
                     }
-                });
+                })
         },
         openModal(item) {
             this.tempOrder = {};
@@ -209,7 +216,6 @@ export default {
     },
     created() {
         this.getOrders();
-        this.productsList = this.localProducts;
     },
 }
 </script>
