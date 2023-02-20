@@ -3,29 +3,25 @@
     <Toast></Toast>
     <div class="text-end">
         <button class="btn btn-primary" type="button" @click="openModal(true)">
-            新增產品
+            建立新的優惠券
         </button>
     </div>
     <table class="table mt-4">
         <thead>
             <tr>
-                <th width="120">分類</th>
-                <th>產品名稱</th>
-                <th width="120">原價</th>
-                <th width="120">售價</th>
+                <th width="120">名稱</th>
+                <th>折扣百分比</th>
+                <th width="120">到期日</th>
                 <th width="100">是否啟用</th>
                 <th width="200">編輯</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item in products" :key="item.id">
-                <td>{{ item.category }}</td>
+            <tr v-for="(item, key) in coupons" :key="key">
                 <td>{{ item.title }}</td>
+                <td>{{ item.percent }}%</td>
                 <td class="text-right">
-                    {{ $filters.currency(item.origin_price) }}
-                </td>
-                <td class="text-right">
-                    {{ $filters.currency(item.price) }}
+                    {{ $filters.date(item.due_date) }}
                 </td>
                 <td>
                     <span class="text-success" v-if="item.is_enabled">啟用</span>
@@ -40,99 +36,95 @@
             </tr>
         </tbody>
     </table>
-    <ProductModal ref="productModal" :product="tempProduct" @update-product="updatedProduct"></ProductModal>
-    <DelModal ref="delModal" :item="tempProduct" @del-product="delProduct"></DelModal>
-<Pages :pages="pagination" @emit-pages="getProducts"></Pages>
+    <CouponModal ref="couponModal" :coupon="tempCoupon" @update-coupon="updatedCoupon"></CouponModal>
+    <DelModal ref="delModal" :item="tempCoupon" @del-coupon="delCoupons"></DelModal>
+    <Pages :pages="pagination" @emit-pages="getCoupons"></Pages>
 </template>
 
 <script>
-import ProductModal from '../components/ProductModal.vue';
+import CouponModal from '../components/CouponModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
-import { useProductStore } from '../stores/store.js';
-// import { storeToRefs } from 'pinia';
 
-
-// 解構使用的話
-// const { products } = storeToRefs(productStore);
-// console.log(products);
 
 export default {
     data() {
         return {
-            products: [],
+            coupons: [],
             pagination: {},
-            tempProduct: {},
+            tempCoupon: {
+                title: '',
+                is_enabled: 0,
+                percent: 100,
+                code: '',
+            },
             isNew: false,
             isLoading: false,
         };
     },
     components: {
-        ProductModal,
+        CouponModal,
         DelModal,
         Toast,
         Pages,
     },
     inject: ['emitter'],
     methods: {
-        getProducts(page = 1) {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
+        getCoupons(page = 1) {
+            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons?page=${page}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.get(api)
                 .then((res) => {
                     if (res.data.success) {
                         this.isLoading = false;
-                        this.products = res.data.products;
+                        this.coupons = res.data.coupons;
                         this.pagination = res.data.pagination;
-                        // 以下為寫入pinia
-                        const productStore = useProductStore();
-                        productStore.addProduct(this.products);
                     }
                 });
         },
         openModal(isNew, item) {
             if (isNew) {
-                this.tempProduct = {};
+                this.tempCoupon = {};
             } else {
                 // 帶入產品資料
-                this.tempProduct = { ...item };
+                this.tempCoupon = { ...item };
             }
             this.isNew = isNew;
-            const productComponent = this.$refs.productModal;
+            const productComponent = this.$refs.couponModal;
             productComponent.showModal();
         },
         delModal(item) {
-            this.tempProduct = { ...item };
+            this.tempCoupon = { ...item };
             const delComponent = this.$refs.delModal;
             delComponent.showModal();
         },
-        updatedProduct(item) {
-            this.tempProduct = item;
+        updatedCoupon(item) {
+            this.tempCoupon = item;
             // 新增
-            let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`;
+            let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon`;
             let httpMethod = 'post';
             // 編輯判斷 & 修改
             if (!this.isNew) {
-                api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`
+                api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${item.id}`
                 httpMethod = 'put';
             }
-            const productComponent = this.$refs.productModal;
+            const couponComponent = this.$refs.couponModal;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
-            this.$http[httpMethod](api, { data: this.tempProduct })
+            this.$http[httpMethod](api, { data: this.tempCoupon })
                 .then((response) => {
                     this.isLoading = false;
                     // console.log(response);
-                    productComponent.hideModal();
-                    this.getProducts();
+                    couponComponent.hideModal();
+                    this.getCoupons();
                     // 傳送API訊息至吐司元件
-                    this.$httpMessageState(response, '更新產品資料');
+                    this.$httpMessageState(response, '更新優惠券資料');
                 });
         },
-        delProduct() {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+        delCoupons() {
+            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${this.tempCoupon.id}`;
             const delComponent = this.$refs.delModal;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
@@ -141,13 +133,13 @@ export default {
                     this.isLoading = false;
                     console.log(response.data);
                     delComponent.hideModal();
-                    this.getProducts();
-                    this.$httpMessageState(response, '刪除產品資料');
+                    this.getCoupons();
+                    this.$httpMessageState(response, '刪除優惠券資料');
                 })
         },
     },
     created() {
-        this.getProducts();
+        this.getCoupons();
     },
 }
 </script>
