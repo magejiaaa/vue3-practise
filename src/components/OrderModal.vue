@@ -14,6 +14,7 @@
                         <div class="col-md-4">
                             <h3>用戶資料</h3>
                             <table class="table">
+                                <!-- 當tempOrder.user傳資料後再顯示 -->
                                 <tbody v-if="tempOrder.user">
                                     <tr>
                                         <th style="width: 100px;">姓名</th>
@@ -44,22 +45,22 @@
                                     </tr>
                                     <tr>
                                         <th>下單時間</th>
-                                        <td>{{ tempOrder.create_at }}</td>
+                                        <td>{{ $filters.date(tempOrder.create_at) }}</td>
                                     </tr>
                                     <tr>
                                         <th>付款時間</th>
                                         <td>
-                                            <span>
-                                                {{ tempOrder.paid_date }}
+                                            <span v-if="tempOrder.paid_date">
+                                                {{ $filters.date(tempOrder.paid_date) }}
                                             </span>
-                                            <span>時間不正確</span>
+                                            <span v-else>時間不正確</span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>付款狀態</th>
                                         <td>
                                             <strong class="text-success" v-if="tempOrder.is_paid">已付款</strong>
-                                            <span v-else>尚未付款</span>
+                                            <span v-else class="text-muted">尚未付款</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -74,18 +75,27 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
                                         <th>
                                             品項
                                         </th>
+                                        <th>
+                                            單價/數量
+                                        </th>
+                                        <th class="text-end">
+                                            總價
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in tempOrder.products" :key="item.id">
+                                        <th>
+                                            {{ item.name.title }}
+                                        </th>
                                         <td>
-                                            數量/價格
+                                            {{ item.name.price }}元/{{ item.qty }}{{ item.name.unit }}
                                         </td>
                                         <td class="text-end">
-                                            總價
+                                            {{ item.name.price * item.qty }}元
                                         </td>
                                     </tr>
                                 </tbody>
@@ -117,6 +127,8 @@ export default {
     watch: {
         orderOutside() {
             this.tempOrder = this.orderOutside;
+            // 監聽是否付款
+            this.isPaid = this.tempOrder.is_paid;
         },
     },
     data() {

@@ -15,10 +15,10 @@
         </thead>
         <tbody>
             <tr v-for="item in orders" :key="item.id">
-                <td>{{ item.create_at }}</td>
+                <td>{{ $filters.date(item.create_at) }}</td>
                 <td>{{ item.user.email }}</td>
                 <td class="text-right" v-for="product in item.products" :key="product.id">
-                    {{ product.name && product.name.title }} {{ product.qty }}/{{ product.name && product.name.category }}
+                    {{ product.name && product.name.title }} / {{ product.qty }}{{ product.name && product.name.unit }}
                 </td>
                 <td class="text-right">
                     {{ $filters.currency(item.total) }}
@@ -51,8 +51,6 @@ import OrderModal from '../components/OrderModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
-import { useProductStore } from '@/stores/store';
-import { mapState } from 'pinia';
 
 
 export default {
@@ -85,14 +83,12 @@ export default {
                 {
                     "create_at": 1523539834,
                     "id": "-L9u2EUkQSoEmW7QzGLF",
-                    "is_paid": true,
+                    "is_paid": false,
                     "message": "這是留言",
-                    "paid_date": 1523539924,
-                    "payment_method": "credit_card",
                     "products": {
                         "L8nBrq8Ym4ARI1Kog4t": {
                             "id": "L8nBrq8Ym4ARI1Kog4t",
-                            "product_id": "-L8moRfPlDZZ2e-1ritQ",
+                            "product_id": "-NO8c9jF-eXmWCEoEhWi",
                             "qty": "3"
                         }
                     },
@@ -111,6 +107,7 @@ export default {
             tempOrder: {},
             isNew: false,
             isLoading: false,
+            pages: 1,
         };
     },
     components: {
@@ -120,41 +117,48 @@ export default {
         Pages,
     },
     inject: ['emitter'],
-    computed: {
-        // 把產品資訊帶進來
-        ...mapState(useProductStore, {
-            localProducts: 'products',
-        })
-    },
-    // mounted() {
-    //     this.productsList = this.localProducts;
-    // },
     methods: {
         // 定義一個接受 productsList 參數的 getProductTitle 函數
         getProductTitle(productId, productsList) {
+            // 判斷productsList中的id是否等於傳入的第一個值(productId)
             const product = productsList.find((item) => item.id === productId);
-            console.log('getProductTitle', product);
             return product ? product : "Unknown";
-            // return product || { id: productId, title: "Unknown" };
         },
-        getOrders(page = 1) {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
+        getOrders(pages = 1) {
+            this.pages = pages;
+            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${pages}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.get(api)
                 .then((res) => {
                     if (res.data.success) {
-                        this.isLoading = false;
                         // this.orders = res.data.orders;
                         this.pagination = res.data.pagination;
-                        this.productsList = this.localProducts;
-                        this.orders.forEach((order) => {
-                            // 帶入的product為當筆訂單的products
-                            Object.values(order.products).forEach((product) => {
-                                product.name = this.getProductTitle(product.product_id, this.productsList);
-                            });
+                        // 取得產品資料
+                        return new Promise((resolve, reject) => {
+                            const proApi = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`;
+                            this.$http.get(proApi)
+                                .then((resPro) => {
+                                    if (resPro.data.success) {
+                                        this.productsList = resPro.data.products;
+                                        resolve();
+                                    } else {
+                                        reject('產品資料取得失敗');
+                                    }
+                                })
                         });
                     }
+                })
+                .then(() => {
+                    this.isLoading = false;
+                    this.orders.forEach((order) => {
+                        // 帶入的product為每筆訂單的products
+                        // Object.values將order.products轉換成陣列
+                        Object.values(order.products).forEach((product) => {
+                            // 將符合product_id的產品寫入至product.name
+                            product.name = this.getProductTitle(product.product_id, this.productsList);
+                        });
+                    });
                 })
         },
         openModal(item) {
@@ -174,26 +178,18 @@ export default {
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${item.id}`
             const orderComponent = this.$refs.OrderModal;
             this.isLoading = true;
+            const paid = {
+                is_paid: item.is_paid,
+            };
             // 第一個是路徑 第二個是送出的資料
-            this.$http.put(api, { data: this.tempOrder })
+            this.$http.put(api, { data: paid })
                 .then((response) => {
                     this.isLoading = false;
+                    this.getOrders(this.pages);
                     // console.log(response);
                     orderComponent.hideModal();
                     // 傳送API訊息至吐司元件
-                    if (response.data.success) {
-                        this.getOrders();
-                        this.emitter.emit('push-message', {
-                            style: 'success',
-                            title: '更新成功',
-                        })
-                    } else {
-                        this.emitter.emit('push-message', {
-                            style: 'danger',
-                            title: '更新失敗',
-                            content: response.data.message.join('、'),
-                        })
-                    }
+                    this.$httpMessageState(response, '更新付款狀態');
                 });
         },
         delProduct() {
@@ -207,10 +203,7 @@ export default {
                     console.log(response.data);
                     delComponent.hideModal();
                     this.getOrders();
-                    this.emitter.emit('push-message', {
-                        style: 'danger',
-                        title: '刪除成功',
-                    })
+                    this.$httpMessageState(response, '刪除');
                 })
         },
     },

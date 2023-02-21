@@ -15,7 +15,7 @@
                         <router-link to="/dashboard/order" class="nav-link active" aria-current="page">訂單</router-link> 
                     </li>
                     <li class="nav-item">
-                        <router-link to="/dashboard/products" class="nav-link active" aria-current="page">優惠券</router-link> 
+                        <router-link to="/dashboard/coupon" class="nav-link active" aria-current="page">優惠券</router-link> 
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" @click.prevent="logout">登出</a>
