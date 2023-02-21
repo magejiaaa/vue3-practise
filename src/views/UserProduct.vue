@@ -37,10 +37,10 @@ export default {
     },
     methods: {
         getProduct() {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`;
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
-            this.$http.get(api)
+            this.$http.get(url)
                 .then((res) => {
                     if (res.data.success) {
                         this.isLoading = false;
