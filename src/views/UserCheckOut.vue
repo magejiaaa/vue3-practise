@@ -1,6 +1,6 @@
 <template>
     <div class="my-5 row justify-content-center">
-        <form class="col-md-6">
+        <form class="col-md-6" @submit.prevent="payOrder">
             <table class="table align-middle">
                 <thead>
                     <th>品名</th>
@@ -8,16 +8,16 @@
                     <th>單價</th>
                 </thead>
                 <tbody>
-                    <tr v-for="item in order.product" :key="item.product_id">
-                        <td>{{ item.title }}</td>
-                        <td>1 / 個</td>
-                        <td class="text-end">100</td>
+                    <tr v-for="item in order.products" :key="item.product_id">
+                        <td>{{ item.product.title }}</td>
+                        <td>{{ item.qty }} / {{ item.product.unit }}</td>
+                        <td class="text-end">{{ item.final_total }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2" class="text-end">總計</td>
-                        <td class="text-end">100</td>
+                        <td class="text-end">{{ order.total }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -26,30 +26,30 @@
                 <tbody>
                     <tr>
                         <th width="100">Email</th>
-                        <td>abc@gmail.com</td>
+                        <td>{{ order.user.email }}</td>
                     </tr>
                     <tr>
                         <th>姓名</th>
-                        <td>AA</td>
+                        <td>{{ order.user.name }}</td>
                     </tr>
                     <tr>
                         <th>收件人電話</th>
-                        <td>0987654321</td>
+                        <td>{{ order.user.tel }}</td>
                     </tr>
                     <tr>
                         <th>收件人地址</th>
-                        <td>Address</td>
+                        <td>{{ order.user.address }}</td>
                     </tr>
                     <tr>
                         <th>付款狀態</th>
                         <td>
-                            <span>尚未付款</span>
-                            <span class="text-success">付款完成</span>
+                            <span v-if="!order.is_paid">尚未付款</span>
+                            <span class="text-success" v-else>付款完成</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="text-end">
+            <div class="text-end" v-if="!order.is_paid">
                 <button class="btn btn-danger">確認付款去</button>
             </div>
         </form>
@@ -61,15 +61,16 @@ export default {
     data() {
         return {
             order: {
-                user:{},
+                products: {},
+                user: {},
             },
-            orderID: '',
+            orderId: '',
             isLoading: false,
         }
     },
     methods: {
         getOrders() {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderID}`;
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderId}`;
             this.$http.get(url)
             .then((res) => {
                 if (res.data.success) {
@@ -77,11 +78,22 @@ export default {
                 }
             })
         },
-
+        payOrder() {
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`;
+            this.$http.post(url)
+            .then((res) => {
+                console.log(res);
+                if (res.data.success) {
+                    this.getOrders();
+                }
+            })
+        }
     },
     created() {
-        this.orderID = this.$route.params.orderID;
-        console.log(this.orderID);
+        //網址上取得ID
+        this.orderId = this.$route.params.orderId;
+        console.log(this.orderId);
+        this.getOrders();
     },
 }
 </script>
