@@ -8,8 +8,8 @@
                     <th>單價</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>產品</td>
+                    <tr v-for="item in order.product" :key="item.product_id">
+                        <td>{{ item.title }}</td>
                         <td>1 / 個</td>
                         <td class="text-end">100</td>
                     </tr>
@@ -69,7 +69,13 @@ export default {
     },
     methods: {
         getOrders() {
-
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderID}`;
+            this.$http.get(url)
+            .then((res) => {
+                if (res.data.success) {
+                    this.order = res.data.order;
+                }
+            })
         },
 
     },
