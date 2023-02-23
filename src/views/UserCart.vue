@@ -13,7 +13,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in products" :key="item.id">
+                        <tr v-for="item in sortProduct" :key="item.id">
                             <td style="width: 200px">
                                 <div style="height: 100px; background-size: cover; background-position: center"
                                     :style="{ backgroundImage: `url(${item.imageUrl})` }"></div>
@@ -30,9 +30,9 @@
                                         查看更多
                                     </button>
                                     <button type="button" class="btn btn-outline-danger" @click="addCart(item.id)"
-                                        :disabled="this.status.loadingItem === item.id">
+                                        :disabled="cartLoadingItem === item.id">
                                         <div class="spinner-grow spinner-grow-sm text-danger" role="status"
-                                            v-if="this.status.loadingItem === item.id">
+                                            v-if="cartLoadingItem === item.id">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
                                         加到購物車
@@ -61,7 +61,7 @@
                                 <tr v-for="item in cart.carts" :key="item.id">
                                     <td>
                                         <button type="button" class="btn btn-outline-danger btn-sm"
-                                            :disabled="status.loadingItem === item.id" @click="removeCartItem(item.id)">
+                                            :disabled="cartLoadingItem === item.id" @click="removeCartItem(item.id)">
                                             <i class="bi bi-x"></i>
                                         </button>
                                     </td>
@@ -74,7 +74,7 @@
                                     <td>
                                         <div class="input-group input-group-sm">
                                             <input type="number" min="1" class="form-control" v-model.number="item.qty"
-                                                :disabled="item.id === status.loadingItem
+                                                :disabled="item.id === cartLoadingItem
                                                 " @change="updateCart(item)">
                                             <div class="input-group-text">/ {{ item.product.unit }}</div>
                                         </div>
@@ -158,12 +158,15 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'pinia';
+import productStore from '@/stores/productStore';
+import statusStore from '@/stores/statusStore';
+import cartStore from '@/stores/cartStore';
+
 export default {
     data() {
         return {
-            products: [],
             product: {},
-            cart: {},
             form: {
                 user: {
                     name: '',
@@ -173,83 +176,24 @@ export default {
                 },
                 message: '',
             },
-            status: {
-                loadingItem: '', //需對應品項ID
-            },
             coupon_code: '',
         }
     },
+    computed: {
+        ...mapState(productStore, ['sortProduct']),
+        ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
+        ...mapState(cartStore, ['cart']),
+    },
     methods: {
-        getProducts() {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
-            this.isLoading = true;
-            this.$http.get(api)
-                .then((res) => {
-                    if (res.data.success) {
-                        this.isLoading = false;
-                        this.products = res.data.products;
-                    }
-                });
-        },
+        ...mapActions(productStore, ['getProducts']),
+        ...mapActions(cartStore, [
+            'addCart',
+            'getCart',
+            'removeCartItem',
+            'updateCart'
+        ]),
         getProduct(id) {
             this.$router.push(`/user/product/${id}`);
-        },
-        addCart(id) {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-            this.status.loadingItem = id;
-            // 要按照api的格式post
-            const cart = {
-                product_id: id,
-                qty: 1,
-            }
-            this.$http.post(url, { data: cart })
-                .then((res) => {
-                    this.status.loadingItem = '';
-                    console.log(res);
-                    this.getCart();
-                    this.$httpMessageState(res, '加入購物車');
-                })
-        },
-        getCart() {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-            this.isLoading = true;
-            this.$http.get(url)
-                .then((res) => {
-                    if (res.data.success) {
-                        this.cart = res.data.data;
-                        this.isLoading = false;
-                    }
-                })
-        },
-        removeCartItem(id) {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
-            this.isLoading = true;
-            this.$http.delete(url)
-                .then((res) => {
-                    this.isLoading = false;
-                    console.log(res);
-                    this.getCart();
-                    this.$httpMessageState(res, '刪除產品');
-                })
-        },
-        updateCart(item) {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item}`;
-            this.isLoading = true;
-            this.status.loadingItem = item.id;
-            // 要傳遞的資訊
-            const cart = {
-                product_id: item.product_id,
-                qty: item.qty,
-            };
-            this.$http.put(url, { data: cart })
-                .then((res) => {
-                    if (res.data.success) {
-                        this.status.loadingItem = '';
-                        console.log(res);
-                        this.getCart();
-                        this.$httpMessageState(res, '更新購物車');
-                    }
-                })
         },
         addCouponCode() {
             const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
