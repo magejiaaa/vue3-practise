@@ -24,7 +24,7 @@ export default defineStore('cartStore', {
                     status.cartLoadingItem = '';
                     console.log(res);
                     this.getCart();
-                    // this.$httpMessageState(res, '加入購物車');
+                    status.pushMessage({ title: '加入購物車' });
                 })
         },
         getCart() {
