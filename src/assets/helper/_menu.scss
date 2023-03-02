@@ -1,0 +1,41 @@
+// 選單CSS
+
+header .logo {
+    float: left;
+    a {
+        display: block;
+        background: url(/src/assets/logo.png);
+        text-indent: -999999px;
+        width: 312px;
+        height: 80px;
+        text-decoration: none; //超連結不要出現底線
+    }
+}
+
+.menu {
+    li {
+        border: 2px solid #fff;
+        border-radius: 26px;
+        margin: 0 0.3em;
+        padding: 0.3em 1em;
+        a {
+            color: #fff;
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+    }
+}
+.userBtn {
+    border: 2px solid #fff;
+    border-radius: 26px;
+    margin: 0 0.3em;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.userIcon {
+    color: #fff;
+    font-size: 1.9em;
+}

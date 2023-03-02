@@ -44,7 +44,7 @@ export default {
                     if (!this.shown) {
                         this.emitter.emit('push-message', {
                             style: 'success',
-                            title: '登入成功',
+                            title: '登出成功',
                         });
                         this.shown = true;
                     }
