@@ -3,11 +3,11 @@
   <div class="container-fluid">
     <div class="row | banner"></div>
     <div class="row | bannerShadow"></div>
-    <p class="bannerText">
+    <h2 class="bannerText">
       想要那個酷酷的坐騎，但為了抽房身上沒有Gil可以購買？<br>
       又或是想要的寵物無法交易，寵物欄就缺這個看了很心酸？<br>
       菜市場提供一個玩家交易平台，讓不可能化為可能。
-    </p>
+    </h2>
     <!-- scroll -->
     <div class="scrollArrow">
       <span>Scroll</span>
@@ -16,6 +16,40 @@
           d="M13.6863 1C13.6863 0.447715 13.2386 0 12.6863 0C12.134 0 11.6863 0.447715 11.6863 1L11.6863 69.1438L2.5145 53.8575C2.23036 53.3839 1.6161 53.2303 1.14252 53.5145C0.668935 53.7986 0.515371 54.4129 0.799518 54.8865L11.7705 73.1715C12.0547 73.6451 12.6689 73.7986 13.1425 73.5145C13.53 73.282 13.7032 72.8285 13.5978 72.4119C13.6546 72.2863 13.6863 72.1469 13.6863 72L13.6863 1Z"
           fill="white" />
       </svg>
+    </div>
+
+    <!-- 販售種類 -->
+    <div class="row | saleItem">
+      <div class="d-flex justify-content-center align-items-center">
+        <img :src="itemImg" alt="販售種類">
+        <h6 class="indexTitle">販售種類</h6>
+      </div>
+      <ul class="d-flex justify-content-center">
+        <li class="saleItemList">
+          <router-link to="/dashboard/products" class="active" aria-current="page">
+            <img :src="petImg" alt="寵物販售">
+            <p>寵物販售</p>
+          </router-link>
+        </li>
+        <li class="saleItemList">
+          <router-link to="/dashboard/products" class="active" aria-current="page">
+            <img :src="petImg" alt="寵物販售">
+            <p>寵物販售</p>
+          </router-link>
+        </li>
+        <li class="saleItemList">
+          <router-link to="/dashboard/products" class="active" aria-current="page">
+            <img :src="petImg" alt="寵物販售">
+            <p>寵物販售</p>
+          </router-link>
+        </li>
+        <li class="saleItemList">
+          <router-link to="/dashboard/products" class="active" aria-current="page">
+            <img :src="petImg" alt="寵物販售">
+            <p>寵物販售</p>
+          </router-link>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -29,5 +63,11 @@ export default {
   components: {
     UserNavbar,
   },
+  data() {
+    return {
+      petImg: require('../assets/map_pet-store.png'),
+      itemImg: require('../assets/item_icon.png'),
+    }
+  }
 }
 </script>

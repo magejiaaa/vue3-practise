@@ -34,3 +34,38 @@
         right: -4px;
     }
 }
+
+// 販售種類
+.saleItem {
+    padding: 40px 0;
+    background-image: url(/public/bg_repeat.png);
+    background-repeat: repeat;
+    background-color: #000F28;
+    border-radius: 0px;
+    text-align: center;
+}
+.indexTitle {
+    color: #FFFFFF;
+    position: relative;
+}
+.indexTitle::after {
+    content: 'Item';
+    color: rgba(151, 71, 255, 0.5);
+    position: absolute;
+    top: 20px;
+    left: 25%;
+}
+.saleItemList {
+    background-color: #FFFFFF;
+    width: 13%;
+    margin: 0 10px;
+    // text-align: center;
+    border-radius: 15px;
+    img {
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
+    a {
+        text-decoration: none;
+    }
+}
