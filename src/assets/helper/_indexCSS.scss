@@ -25,5 +25,12 @@
 .scrollArrow {
     position: absolute;
     right: 3%;
-    top: 520px;
+    top: 70%;
+    color: #FFFFFF;
+    span {
+        position: absolute;
+        transform: rotate(-90deg);
+        top: 9px;
+        right: -4px;
+    }
 }
