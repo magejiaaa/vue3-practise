@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-0 fixed-top">
         <header class="container-fluid p-0">
-            <h1 class="m-0 | logo">
+            <h1 class="m-0 ms-4 | logo">
                 <a href="#" class="navbar-brand mb-0 h1 p-0">
                     亞馬烏羅提菜市場
                 </a>
@@ -33,10 +33,21 @@
                         </router-link>
                     </li>
                 </ul>
-                <div class="userBtn">
+                <!-- 使用者選單 -->
+                <div class="userBtn"
+                @mouseenter="isUserOpen = true">
                     <a class="userIcon">
-                            <i class="bi bi-person-circle"></i>
+                        <i class="bi bi-person-circle"></i>
                     </a>
+                    <div class="m-5 | userBtnDown"
+                    @mouseleave="isUserOpen = false">
+                        <transition name="userBtnMenu">
+                            <div class="userMenu_login" v-show="isUserOpen">
+                                <p>HI,目前尚未登入</p>
+                                <button>請登入</button>
+                            </div>
+                        </transition>
+                    </div>
                 </div>
             </div>
         </header>
@@ -49,6 +60,8 @@ export default {
         return {
             // 驗證登入的吐司
             shown: false,
+            // 下拉選單
+            isUserOpen: false
         }
     },
     methods: {

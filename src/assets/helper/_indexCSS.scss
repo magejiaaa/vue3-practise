@@ -14,58 +14,148 @@
 
 .bannerText {
     font-weight: 400;
-    font-size: 1.1em;
+    font-size: 1.125em;
     line-height: 26px;
     color: #FFFFFF;
     position: absolute;
-    left: 10%;
     top: 520px;
+    width: 40%;
+    left: 8.5%;
 }
 
 .scrollArrow {
     position: absolute;
-    right: 3%;
     top: 70%;
     color: #FFFFFF;
     span {
         position: absolute;
         transform: rotate(-90deg);
-        top: 9px;
-        right: -4px;
+        right: 2.6%;
+        font-weight: 300;
+        top: -10px;
+    }
+    svg {
+        position: absolute;
+        right: 3%;
+        bottom: -64px;
     }
 }
 
 // 販售種類
 .saleItem {
-    padding: 40px 0;
+    padding: 4.5rem 0;
     background-image: url(/public/bg_repeat.png);
     background-repeat: repeat;
     background-color: #000F28;
     border-radius: 0px;
     text-align: center;
+    justify-content: center;
+    ul {
+        padding: 0;
+        width: 60%;
+        margin: 0 auto;
+        list-style-type: none;
+    }
 }
+.saleItemList {
+    background-color: #FFFFFF;
+    font-size: 1.25em;
+    border-radius: 15px;
+    width: 147px;
+    opacity: 1;
+    img {
+        padding-bottom: 13px;
+    }
+    a {
+        display: block;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 31px 33px 14px 33px;
+    }
+    p {
+        margin: 0;
+    }
+}
+
 .indexTitle {
     color: #FFFFFF;
+    font-weight: 700;
     position: relative;
+    font-size: 1.5em;
+}
+.indexTitle::before {
+    content: '';
+    width: 65px;
+    height: 58px;
+    background-image: url(/src/assets/image/item_icon.png);
+    position: absolute;
+    top: -10px;
+    left: -65px;
 }
 .indexTitle::after {
     content: 'Item';
     color: rgba(151, 71, 255, 0.5);
+    font-weight: 700;
+    font-family: Roboto;
     position: absolute;
-    top: 20px;
+    top: 25px;
     left: 25%;
 }
-.saleItemList {
-    background-color: #FFFFFF;
-    width: 13%;
-    margin: 0 10px;
-    // text-align: center;
-    border-radius: 15px;
-    img {
-        margin-top: 20px;
-        margin-bottom: 5px;
+
+// 網站特色
+.feature {
+    background: linear-gradient(180deg, #000F28 0%, #4B178E 100%);
+    padding: 75px 0;
+}
+.FeatureGroup {
+    flex-direction: column;
+    width: 42%;
+}
+.FeatureTitle {
+    max-width: 30%;
+    writing-mode:vertical-lr;
+    color: #9747FF;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    margin-right: 7%;
+    h5 {
+        padding-right: 33px;
+        font-weight: 700;
+        font-size: 1.5em;
     }
-    a {
-        text-decoration: none;
+}
+.FeatureTitle::after {
+    content: 'Feature';
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    font-weight: 700;
+    color: rgba(151, 71, 255, 0.4);
+    transform: rotate(180deg);
+    font-size: 1.125em;
+}
+.FeatureList {
+    background: transparent !important;
+    color: #FFFFFF;
+    border: 2px solid #9747FF !important;
+    margin-bottom: 30px;
+    .card-header {
+        border-bottom: 2px solid #9747FF;
+    }
+    h6 {
+        display: inline-block;
+        font-weight: 100;
+        font-size: 1.8em;
+        vertical-align: middle;
+        margin: 0;
+        padding-right: 58px;
+    }
+    p {
+        font-weight: 100;
+        font-size: 1.125em;
+        padding: 27px 18%;
+        margin: 0;
+        text-align: left;
     }
 }

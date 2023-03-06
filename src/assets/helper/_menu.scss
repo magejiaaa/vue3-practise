@@ -4,9 +4,9 @@ header .logo {
     float: left;
     a {
         display: block;
-        background: url(/src/assets/logo.png);
+        background: url(/src/assets/image/logo.png);
         text-indent: -999999px;
-        width: 312px;
+        width: 260px;
         height: 80px;
         text-decoration: none; //超連結不要出現底線
     }
@@ -14,28 +14,88 @@ header .logo {
 
 .menu {
     li {
-        border: 2px solid #fff;
-        border-radius: 26px;
-        margin: 0 0.3em;
-        padding: 0.3em 1em;
+        margin: 0 0.5em;
         a {
+            display: block;
             color: #fff;
             font-size: 1.1em;
             text-decoration: none;
+            padding: 0.3em 1em;
+            transition: all 0.3s ease;
+            border-radius: 26px;
+            border: 2px solid #fff;
+        }
+        a:hover {
+            color: #FCFF71;
+            box-shadow: 2px 2px 10px 0 rgba(255, 255, 255, .5),
+            -4px -4px 6px 0 rgba(116, 125, 136, .2),
         }
     }
 }
 .userBtn {
-    border: 2px solid #fff;
-    border-radius: 26px;
-    margin: 0 0.3em;
-    height: 40px;
-    width: 40px;
+    position: relative;
+    margin: 0 0.5em;
+}
+.userIcon {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.userIcon {
+    border: 2px solid #fff;
+    height: 40px;
+    width: 40px;
+    border-radius: 26px;
     color: #fff;
     font-size: 1.9em;
+    transition: all 0.3s ease;
+}
+.userIcon:hover {
+    box-shadow: 2px 2px 10px 0 rgba(255, 255, 255, .5),
+    -4px -4px 6px 0 rgba(116, 125, 136, .2),
+}
+.userIcon:hover {
+    color: #FCFF71;
+}
+.bi-person-circle::before {
+    vertical-align: -0.15em !important;
+}
+
+// 選單背景
+.userMenu_login {
+    width: 160px;
+    border-radius: 0 0 15px 15px;
+    text-align: center;
+    background-color: #fff;
+    p {
+        padding: 17px 0 9px 0;
+        margin: 0;
+    }
+    button {
+        border: 0;
+        border-radius: 15px;
+        color: #fff;
+        background-color: #000F28;
+        padding: 7px 38px;
+        margin-bottom: 12px;
+    }
+}
+
+.userBtnDown {
+    position: absolute;
+    top: 12px;
+    right: -50px;
+    overflow: hidden;
+}
+.userBtnMenu-enter-active,
+.userBtnMenu-leave-active {
+    transition: all 0.7s ease;
+}
+.userBtnMenu-enter-from,
+.userBtnMenu-leave-to {
+    transform: translateY(-100%);
+    opacity: 50%;
+}
+.userBtnMenu-enter-to,
+.userBtnMenu-leave-form {
+    transform: translateY(0%);
+    opacity: 100%;
 }
