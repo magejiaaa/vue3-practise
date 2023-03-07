@@ -99,3 +99,9 @@ header .logo {
     transform: translateY(0%);
     opacity: 100%;
 }
+
+@media screen and (max-width:768px) {
+    .mobileMenu {
+        border: none !important;
+    }
+}

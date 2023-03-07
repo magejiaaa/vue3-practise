@@ -7,12 +7,14 @@
                 </a>
             </h1>
             <!-- 手機版 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler me-4 | mobileMenu" type="button"
+            aria-expanded="false"
+            @click="mobileMenuShow = !mobileMenuShow">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end me-4" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-end me-4"
+            :class="{'show':mobileMenuShow}">
                 <ul class="navbar-nav | menu">
                     <li class="nav-item">
                         <router-link to="/dashboard/products" class=" active" aria-current="page">寵物販售</router-link>
@@ -61,7 +63,8 @@ export default {
             // 驗證登入的吐司
             shown: false,
             // 下拉選單
-            isUserOpen: false
+            isUserOpen: false,
+            mobileMenuShow: false,
         }
     },
     methods: {
