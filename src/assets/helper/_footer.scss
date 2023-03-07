@@ -1,0 +1,36 @@
+.footer {
+    padding: 60px 10% 10px 10%;
+    background: #1E1E1E;
+    color: #828282;
+    text-align: center;
+}
+
+.mapLink {
+    width: 35% !important;
+    margin-bottom: 0 !important;
+    a {
+        color: #fff;
+    }
+    a:hover {
+        color: #FCFF71;
+    }
+    // 表格行列反轉
+    tr { display: block; float: left; }
+    th, td {
+        padding: 0rem 1.5rem;
+        padding-bottom: 6px;
+        font-weight: 100;
+        display: block;
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.company {
+    color: #9747FF;
+}
+
+.copyright {
+    font-size: 0.85em;
+}
