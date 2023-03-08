@@ -27,7 +27,7 @@
           <!-- <img :src="itemImg" alt="販售種類"> -->
           <h5 class="indexTitle">販售種類</h5>
         </div>
-        <ul class="d-flex justify-content-between mb-5" ref="ItemBox">
+        <ul class="d-flex justify-content-around mb-0 mb-md-5 flex-wrap" ref="ItemBox">
           <li class="saleItemList">
             <router-link to="/dashboard/products" class="active" aria-current="page">
               <img :src="petImg" alt="寵物販售">
@@ -127,8 +127,12 @@ export default {
 
 
     const scrollText = ref(null)
+    // 販售種類
     const ItemBox = ref(null)
+    const mediaQuery = "(max-width: 820px)";
+    const isSmallScreen = gsap.matchMedia(mediaQuery).matches;
     const bannerText = ref(null)
+    // 網站特色
     const Feature = ref(null)
     const FeatureList1 = ref(null)
     const FeatureList2 = ref(null)
@@ -157,8 +161,8 @@ export default {
         duration: 0.7,
         scrollTrigger: {
           trigger: ItemBox.value,
-          start: "top 80%",
-          end: "top 50%",
+          start: isSmallScreen ? "top 100%" : "top 80%",
+          end: isSmallScreen ? "bottom bottom" : "top 50%",
           scrub: true,
           markers: false,
           animation: gsap.from(boxes, {
@@ -212,7 +216,9 @@ export default {
     });
 
     onUnmounted(() => {
-      // ctx.value.revert();
+      gsap.scrollTrigger.getAll().forEach((trigger) => {
+        trigger.kill();
+      });
     });
 
     return {
