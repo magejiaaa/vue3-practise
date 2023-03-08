@@ -1,55 +1,70 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-0 fixed-top">
         <header class="container-fluid p-0">
-            <h1 class="m-0 ms-4 | logo">
+            <h1 class="m-0 ms-1 ms-md-4 | logo">
                 <a href="#" class="navbar-brand mb-0 h1 p-0">
                     亞馬烏羅提菜市場
                 </a>
             </h1>
             <!-- 手機版 -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="m-0 me-md-4 | mobileMenu" type="button" aria-expanded="false"
+            @click="mobileMenuShow = !mobileMenuShow"
+            :class="{'is-opened':mobileMenuShow}">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
 
-            <div class="collapse navbar-collapse justify-content-end me-4" id="navbarNav">
-                <ul class="navbar-nav | menu">
-                    <li class="nav-item">
-                        <router-link to="/dashboard/products" class=" active" aria-current="page">寵物販售</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/dashboard/order" class=" active" aria-current="page">坐騎販售</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/dashboard/coupon" class=" active" aria-current="page">代打帶練</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/dashboard/coupon" class=" active" aria-current="page">購買Gil</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/dashboard/coupon" class=" active" aria-current="page">
-                            <i class="bi bi-cart3"></i>
-                            購物車
-                        </router-link>
-                    </li>
-                </ul>
-                <!-- 使用者選單 -->
-                <div class="userBtn"
-                @mouseenter="isUserOpen = true">
-                    <a class="userIcon">
-                        <i class="bi bi-person-circle"></i>
-                    </a>
-                    <div class="m-5 | userBtnDown"
-                    @mouseleave="isUserOpen = false">
-                        <transition name="userBtnMenu">
-                            <div class="userMenu_login" v-show="isUserOpen">
+            <transition name="menu">
+                <div class="navbar-collapse justify-content-end me-lg-4 | showMenu" v-show="mobileMenuShow">
+                    <ul class="navbar-nav | menu">
+                        <li class="nav-item">
+                            <router-link to="/dashboard/products" class=" active" aria-current="page">寵物販售</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/dashboard/order" class=" active" aria-current="page">坐騎販售</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/dashboard/coupon" class=" active" aria-current="page">代打帶練</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/dashboard/coupon" class=" active" aria-current="page">購買Gil</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/dashboard/coupon" class=" active" aria-current="page">
+                                <i class="bi bi-cart3"></i>
+                                購物車
+                            </router-link>
+                        </li>
+                        <!-- 使用者選單手機版 -->
+                        <li class="nav-item | mobileUserIcon">
+                            <a class="nav-link">
+                                <i class="bi bi-person-circle"></i>
+                                使用者選單
+                            </a>
+                            <div class="userMenu_login">
                                 <p>HI,目前尚未登入</p>
-                                <button>請登入</button>
+                                <router-link to="/login" class=" active" aria-current="page">請登入</router-link>
                             </div>
-                        </transition>
+                        </li>
+                    </ul>
+                    <!-- 使用者選單 -->
+                    <div class="userBtn" @mouseenter="isUserOpen = true">
+                        <a class="userIcon">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                        <div class="m-5 | userBtnDown" @mouseleave="isUserOpen = false">
+                            <transition name="userBtnMenu">
+                                <div class="userMenu_login" v-show="isUserOpen">
+                                    <p>HI,目前尚未登入</p>
+                                    <router-link to="/login" class=" active" aria-current="page">請登入</router-link>
+                                </div>
+                            </transition>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </transition>
+
         </header>
     </nav>
 </template>
@@ -61,7 +76,8 @@ export default {
             // 驗證登入的吐司
             shown: false,
             // 下拉選單
-            isUserOpen: false
+            isUserOpen: false,
+            mobileMenuShow: false,
         }
     },
     methods: {

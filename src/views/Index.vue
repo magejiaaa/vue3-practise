@@ -27,26 +27,26 @@
           <!-- <img :src="itemImg" alt="販售種類"> -->
           <h5 class="indexTitle">販售種類</h5>
         </div>
-        <ul class="d-flex justify-content-between mb-5" ref="ItemBox">
-          <li class="saleItemList" ref="saleItemList">
+        <ul class="d-flex justify-content-around mb-0 mb-md-5 flex-wrap" ref="ItemBox">
+          <li class="saleItemList">
             <router-link to="/dashboard/products" class="active" aria-current="page">
               <img :src="petImg" alt="寵物販售">
               <p>寵物販售</p>
             </router-link>
           </li>
-          <li class="saleItemList" ref="saleItemList">
+          <li class="saleItemList">
             <router-link to="/dashboard/products" class="active" aria-current="page">
               <img :src="mountImg" alt="坐騎販售">
               <p>坐騎販售</p>
             </router-link>
           </li>
-          <li class="saleItemList" ref="saleItemList">
+          <li class="saleItemList">
             <router-link to="/dashboard/products" class="active" aria-current="page">
               <img :src="boosterImg" alt="代打代練">
               <p>代打代練</p>
             </router-link>
           </li>
-          <li class="saleItemList" ref="saleItemList">
+          <li class="saleItemList">
             <router-link to="/dashboard/products" class="active" aria-current="page">
               <img :src="GilImg" alt="購買Gil">
               <p>購買Gil</p>
@@ -70,10 +70,10 @@
       <div class="d-flex text-center justify-content-center align-items-start | feature">
         <div class="FeatureTitle">
           <h5>網站特色</h5>
-          <img :src="FeatureImg" alt="網站特色的尊嚴王">
+          <img :src="FeatureImg" alt="網站特色的尊嚴王" ref="Feature">
         </div>
-        <div class="FeatureGroup">
-          <div class="card | FeatureList">
+        <div class="FeatureGroup" ref="FeatureGroup">
+          <div class="card | FeatureList" ref="FeatureList1">
             <div class="card-header">
               <svg xmlns="http://www.w3.org/2000/svg" width="58" height="58" viewBox="0 0 58 58" fill="none">
                 <path
@@ -84,7 +84,7 @@
             </div>
             <p class="card-body">打破傳統需要開專屬賣場的功能，讓各種組合自動顯示優惠，省下溝通的時間。</p>
           </div>
-          <div class="card | FeatureList">
+          <div class="card | FeatureList" ref="FeatureList2">
             <div class="card-header">
               <svg xmlns="http://www.w3.org/2000/svg" width="58" height="58" viewBox="0 0 58 58" fill="none">
                 <path
@@ -127,38 +127,98 @@ export default {
 
 
     const scrollText = ref(null)
+    // 販售種類
     const ItemBox = ref(null)
-    const ctx = ref()
+    const mediaQuery = "(max-width: 820px)";
+    const isSmallScreen = gsap.matchMedia(mediaQuery).matches;
+    const bannerText = ref(null)
+    // 網站特色
+    const Feature = ref(null)
+    const FeatureList1 = ref(null)
+    const FeatureList2 = ref(null)
+    const FeatureGroup = ref(null)
 
 
     onMounted(() => {
+      gsap.from(bannerText.value, {
+        x: '-500px',
+        opacity: 0,
+        duration: 1,
+      })
+
       gsap.to(scrollText.value, {
-          y: '13px',
-          duration: 0.8,
-          repeat: -1,
-          yoyo: true,
-        });
-      ctx.value = gsap.context((self) => {
-        const boxes = self.selector('.saleItemList');
-        boxes.forEach((box) => {
-          gsap.from(box, {
-            y: '50px',
+        y: '13px',
+        duration: 0.8,
+        repeat: -1,
+        yoyo: true,
+      });
+
+      const boxes = gsap.utils.toArray(ItemBox.value.querySelectorAll('li'));
+      gsap.to(boxes, {
+        opacity: 1,
+        y: '0px',
+        stagger: 0.2,
+        duration: 0.7,
+        scrollTrigger: {
+          trigger: ItemBox.value,
+          start: isSmallScreen ? "top 100%" : "top 80%",
+          end: isSmallScreen ? "bottom bottom" : "top 50%",
+          scrub: true,
+          markers: false,
+          animation: gsap.from(boxes, {
             opacity: 0,
-            delay: 1,
-            scrollTrigger: {
-              trigger: box,
-              start: 'bottom bottom',
-              end: 'top 60%',
-              scrub: true,
-              markers: true,
-            }
-          })
+            y: '50px',
+            duration: 0.5,
+          }),
+        },
+      });
+
+      gsap.from(Feature.value, {
+        opacity: 0,
+        x: '-200px',
+        y: '-50px',
+        scrollTrigger: {
+          trigger: Feature.value,
+          start: "top 90%",
+          end: "top 30%",
+          scrub: true,
+          markers: false,
+        }
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: FeatureGroup.value,
+          start: "top 90%",
+          end: "top 30%",
+          scrub: true,
+          markers: false,
+        }
+      });
+
+      tl.fromTo(FeatureList1.value, 
+        {
+          x: '200px',
+          opacity: 0,
+        },
+        {
+          x: '0px',
+          opacity: 1,
+          duration: 0.7,
+        }
+      )
+        .from(FeatureList2.value, {
+          x: '200px',
+          opacity: 0,
+          duration: 0.7
         });
-      }, ItemBox.value)
+
     });
 
     onUnmounted(() => {
-      ctx.value.revert();
+      gsap.scrollTrigger.getAll().forEach((trigger) => {
+        trigger.kill();
+      });
     });
 
     return {
@@ -168,8 +228,15 @@ export default {
       boosterImg,
       GilImg,
       FeatureImg,
+
       scrollText,
       ItemBox,
+      bannerText,
+      Feature,
+      FeatureGroup,
+      FeatureList1,
+      FeatureList2
+
     }
   },
 }

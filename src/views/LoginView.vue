@@ -1,25 +1,33 @@
 <template>
-    <div class="container mt-5">
+    <div class="container-fluid pt-5 | loginBox">
         <form class="row justify-content-center"
         @submit.prevent="signIn">
-            <div class="col-md-6">
-                <h1 class="h3 mb-3 font-weight-normal">請先登入</h1>
-                <div class="mb-2">
-                    <label for="inputEmail" class="sr-only">Email address</label>
-                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
+            <div class="col-md-5 | loginImg"></div>
+            <div class="col-md-5 | enterUser">
+                <h1 class="font-weight-normal">會員登入</h1>
+                <h3>Login</h3>
+                <div class="mb-3 d-flex | inputModel">
+                    <label for="inputEmail" class="inputIcon">
+                        <i class="bi bi-person-circle"></i>
+                    </label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="請輸入帳號"
                     v-model="user.username"
                     required
                     autofocus />
                 </div>
-                <div class="mb-2">
-                    <label for="inputPassword" class="sr-only">Password</label>
-                    <input type="password" id="inputPassword" class="form-control" placeholder="Password"
+                <div class="mb-3 d-flex | inputModel">
+                    <label for="inputPassword" class="inputIcon">
+                        <i class="bi bi-lock-fill"></i>
+                    </label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="請輸入密碼"
                     v-model="user.password"
                     required />
                 </div>
-
-                <div class="text-end mt-4">
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">登入</button>
+                <div class="text-end">
+                    <a href="#">忘記密碼</a>
+                </div>
+                <div class="mt-4 text-center">
+                    <button class="normalBtn" type="submit">登入</button>
                 </div>
             </div>
         </form>

@@ -1,6 +1,6 @@
 <template>
     <div class="footer">
-        <div class="d-flex align-items-start justify-content-between text-start mb-5">
+        <div class="d-flex flex-wrap align-items-start justify-content-between text-start mb-0 mb-md-5">
         <!-- LOGO -->
         <img :src="footerLogo" alt="">
 
