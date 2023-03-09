@@ -50,4 +50,12 @@
     padding: 16px 40px;
     border: none;
     color: #FFFFFF;
+    transition: all 0.3s ease;
+    &:hover {
+        background: #5f25aa;
+    }
+}
+
+.bigBtn {
+    width: 100%;
 }
