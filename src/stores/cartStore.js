@@ -4,6 +4,7 @@ import statusStore from '@/stores/statusStore';
 
 const status = statusStore();
 
+
 export default defineStore('cartStore', {
     state: () => ({
         cart: {},
@@ -36,6 +37,9 @@ export default defineStore('cartStore', {
                         this.cart = res.data.data;
                         status.isLoading = false;
                     }
+                })
+                .catch((error) => {
+                    console.log(error);
                 })
         },
         removeCartItem(id) {

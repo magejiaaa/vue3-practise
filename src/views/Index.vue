@@ -1,5 +1,5 @@
 <template>
-  <UserNavbar></UserNavbar>
+  <UserMenu :cart="getCart.cart"></UserMenu>
   <div class="container-fluid">
     <div class="row">
       <div class="banner"></div>
@@ -99,13 +99,17 @@
       </div>
     </div>
   </div>
-  <Footer></Footer>
+  <FooterBox></FooterBox>
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref } from "vue";
-import UserNavbar from "../components/UserNavbar.vue";
-import Footer from '../components/footer.vue';
+import { onMounted, ref, provide } from "vue";
+import emitter from '@/methods/emitter';
+
+// 取得購物車列表傳給navbar
+import cartStore from '@/stores/cartStore';
+
+import FooterBox from '../components/footer.vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -114,10 +118,12 @@ gsap.registerPlugin(ScrollTrigger);
 export default {
   name: 'Index',
   components: {
-    UserNavbar,
-    Footer,
+    FooterBox,
   },
   setup() {
+    provide('emitter', emitter);
+
+    // 圖片連結
     const petImg = require('../assets/image/map_pet-store.png')
     const itemImg = require('../assets/image/item_icon.png')
     const mountImg = require('../assets/image/mdi_horse-human.png')
@@ -126,6 +132,7 @@ export default {
     const FeatureImg = require('../assets/image/FeatureImg.png')
 
 
+    // -----動畫處理-----
     const scrollText = ref(null)
     // 販售種類
     const ItemBox = ref(null)
@@ -215,27 +222,27 @@ export default {
 
     });
 
-    onUnmounted(() => {
-      gsap.scrollTrigger.getAll().forEach((trigger) => {
-        trigger.kill();
-      });
-    });
+    // pinia CART
+    const getCart = cartStore();
 
     return {
+      // 圖片
       petImg,
       itemImg,
       mountImg,
       boosterImg,
       GilImg,
       FeatureImg,
-
+      // 動畫
       scrollText,
       ItemBox,
       bannerText,
       Feature,
       FeatureGroup,
       FeatureList1,
-      FeatureList2
+      FeatureList2,
+      // pinia
+      getCart
 
     }
   },

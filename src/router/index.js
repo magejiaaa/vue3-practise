@@ -1,58 +1,56 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Index from '../views/Index.vue'
+// import { mapActions } from 'pinia';
+// import cartStore from '@/stores/cartStore';
+
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Index
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import('../views/Index.vue'),
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import( '../views/LoginView.vue' )
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/dashboard',
-    component: () => import( '../views/DashBoard.vue' ),
+    component: () => import('../views/DashBoard.vue'),
     children: [
       {
         path: 'products',
-        component: () => import( '../views/Products.vue' ),
+        component: () => import('../views/Products.vue'),
       },
       {
         path: 'order',
-        component: () => import( '../views/Order.vue' ),
+        component: () => import('../views/Order.vue'),
       },
       {
         path: 'coupon',
-        component: () => import( '../views/Coupon.vue' ),
+        component: () => import('../views/Coupon.vue'),
       },
     ],
   },
   {
     path: '/user',
-    component: () => import( '../views/Userboard.vue' ),
+    component: () => import('../views/Userboard.vue'),
     children: [
       {
+        path: 'petProduct',
+        component: () => import('../views/petProduct.vue'),
+      },
+      {
         path: 'cart',
-        component: () => import( '../views/UserCart.vue' ),
+        component: () => import('../views/UserCart.vue'),
       },
       {
         path: 'product/:productId',
-        component: () => import( '../views/UserProduct.vue' ),
+        component: () => import('../views/UserProduct.vue'),
       },
       {
         path: 'checkout/:orderId',
-        component: () => import( '../views/UserCheckOut.vue' ),
+        component: () => import('../views/UserCheckOut.vue'),
       },
     ],
   },
@@ -62,5 +60,17 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
+
+// router.beforeEach((to, from, next) => {
+//   const actions = mapActions(cartStore, ['getCart']);
+//   actions.getCart()
+//     .then(() => {
+//       next();
+//     })
+//     .catch(() => {
+//       next(false);
+//     });
+// });
+
 
 export default router
