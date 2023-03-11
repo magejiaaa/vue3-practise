@@ -1,5 +1,5 @@
 <template>
-    <div class="footer">
+    <footer class="footer">
         <div class="d-flex flex-wrap align-items-start justify-content-between text-start mb-0 mb-md-5">
         <!-- LOGO -->
         <img :src="footerLogo" alt="">
@@ -49,13 +49,13 @@
         </div>
         <!-- copyright -->
         <p class="mb-0 | copyright">FINAL FANTASY XIV © 2010 - 2020 SQUARE ENIX CO., LTD. All Rights Reserved.</p>
-    </div>
+    </footer>
 </template>
 
 <script>
 
 export default {
-    name: 'footer',
+    name: 'FooterBox',
     data() {
         return {
             footerLogo: require('../assets/image/logo.png'),

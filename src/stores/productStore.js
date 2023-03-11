@@ -22,7 +22,9 @@ export default defineStore('productStore', {
                         status.isLoading = false;
                         this.products = res.data.products;
                     }
-                });
+                }).catch((error) => {
+                    console.log(error);
+                })
         },
     }
 })

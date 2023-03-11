@@ -17,6 +17,8 @@ import AllRules from '@vee-validate/rules';
 import { localize, setLocale } from '@vee-validate/i18n';
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 // import { apply } from 'core-js/fn/reflect'
+// 選單
+import UserMenu from './components/UserNavbar.vue';
 
 Object.keys(AllRules).forEach((rule) => {
     defineRule(rule, AllRules[rule]);
@@ -43,6 +45,9 @@ app.component('Loading', Loading);
 app.component('Field', Field);
 app.component('Form', Form);
 app.component('ErrorMessage', ErrorMessage);
+// 選單註冊
+app.component('UserMenu', UserMenu)
 app.use(createPinia());
+
 app.mount('#app');
 

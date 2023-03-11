@@ -1,29 +1,54 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <router-link class="navbar-brand" to="/user/cart">用戶端範例</router-link>
-        </div>
-    </nav>
-    <div class="container-fluid mt-3 position-relative">
-        <ToastMessages></ToastMessages>
-        <router-view></router-view>
+    <UserMenu :cart="cart"></UserMenu>
+    <div class="container-fluid">
+        <router-view />
     </div>
 </template>
 
 <script>
 import emitter from '@/methods/emitter';
-import ToastMessages from '@/components/ToastMessages';
+
+import { mapState, mapActions } from 'pinia';
+import statusStore from '@/stores/statusStore';
+import cartStore from '@/stores/cartStore';
 
 export default {
-    components: {
-        ToastMessages,
+    data() {
+        return {
+            // cart: {},
+        };
     },
     provide() {
         return {
             emitter,
-        }
+        };
+    },
+    computed: {
+        ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
+        ...mapState(cartStore, ['cart']),
+    },
+    methods: {
+        ...mapActions(cartStore, ['getCart']),
     },
     created() {
+        this.getCart();
     },
-};
+}
+
+// export default {
+//     data() {
+//         return {
+//             cart: [],
+//         };
+//     },
+//     setup() {
+//         provide('emitter', emitter);
+
+//         const cartStore = useCartStore();
+//         onMounted(async () => {
+//             await cartStore.getCart();
+//             this.cart = cartStore.cart;
+//         });
+//     }
+// };
 </script>

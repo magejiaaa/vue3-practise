@@ -2,14 +2,11 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-0 fixed-top">
         <header class="container-fluid p-0">
             <h1 class="m-0 ms-1 ms-md-4 | logo">
-                <a href="#" class="navbar-brand mb-0 h1 p-0">
-                    亞馬烏羅提菜市場
-                </a>
+                <router-link to="/" class="navbar-brand mb-0 h1 p-0" aria-current="page">亞馬烏羅提菜市場</router-link>
             </h1>
             <!-- 手機版 -->
             <button class="m-0 me-md-4 | mobileMenu" type="button" aria-expanded="false"
-            @click="mobileMenuShow = !mobileMenuShow"
-            :class="{'is-opened':mobileMenuShow}">
+                @click="mobileMenuShow = !mobileMenuShow" :class="{ 'is-opened': mobileMenuShow }">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -19,7 +16,7 @@
                 <div class="navbar-collapse justify-content-end me-lg-4 | showMenu" v-show="mobileMenuShow">
                     <ul class="navbar-nav | menu">
                         <li class="nav-item">
-                            <router-link to="/dashboard/products" class=" active" aria-current="page">寵物販售</router-link>
+                            <router-link to="/user/petProduct" class=" active" aria-current="page">寵物販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link to="/dashboard/order" class=" active" aria-current="page">坐騎販售</router-link>
@@ -71,8 +68,15 @@
 
 <script>
 export default {
+    props: {
+        cart: {
+            type: Object,
+            default() { return {}; },
+        },
+    },
     data() {
         return {
+            localcart: JSON.parse(JSON.stringify(this.cart)),
             // 驗證登入的吐司
             shown: false,
             // 下拉選單
