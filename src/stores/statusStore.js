@@ -9,7 +9,8 @@ export default defineStore('statusStore', {
     }),
     actions: {
         pushMessage(data) {
-            const { title, content, style = 'success' } = data;
+            const { title = '成功', content, style = 'success' } = data;
+            console.log(data);
             this.messages.push({ style, title, content });
         }
     },

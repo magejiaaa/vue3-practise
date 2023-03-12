@@ -42,7 +42,7 @@
     </table>
     <ProductModal ref="productModal" :product="tempProduct" @update-product="updatedProduct"></ProductModal>
     <DelModal ref="delModal" :item="tempProduct" @del-product="delProduct"></DelModal>
-<Pages :pages="pagination" @emit-pages="getProducts"></Pages>
+    <Pages :pages="pagination" @emit-pages="getProducts"></Pages>
 </template>
 
 <script>
@@ -50,8 +50,10 @@ import ProductModal from '../components/ProductModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
-import { useProductStore } from '../stores/store.js';
 // import { storeToRefs } from 'pinia';
+import { mapState, mapActions } from 'pinia';
+import statusStore from '@/stores/statusStore';
+import productStore from '@/stores/productStore';
 
 
 // 解構使用的話
@@ -61,11 +63,8 @@ import { useProductStore } from '../stores/store.js';
 export default {
     data() {
         return {
-            products: [],
-            pagination: {},
             tempProduct: {},
             isNew: false,
-            isLoading: false,
         };
     },
     components: {
@@ -74,24 +73,15 @@ export default {
         Toast,
         Pages,
     },
+    computed: {
+        ...mapState(productStore, ['products', 'pagination']),
+        ...mapState(statusStore, ['isLoading']),
+    },
     inject: ['emitter'],
     methods: {
-        getProducts(page = 1) {
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
-            this.isLoading = true;
-            // 第一個是路徑 第二個是送出的資料
-            this.$http.get(api)
-                .then((res) => {
-                    if (res.data.success) {
-                        this.isLoading = false;
-                        this.products = res.data.products;
-                        this.pagination = res.data.pagination;
-                        // 以下為寫入pinia
-                        const productStore = useProductStore();
-                        productStore.addProduct(this.products);
-                    }
-                });
-        },
+        ...mapActions(productStore, ['getProducts']),
+        ...mapActions(statusStore, ['pushMessage']),
+
         openModal(isNew, item) {
             if (isNew) {
                 this.tempProduct = {};
@@ -119,30 +109,27 @@ export default {
                 httpMethod = 'put';
             }
             const productComponent = this.$refs.productModal;
-            this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http[httpMethod](api, { data: this.tempProduct })
                 .then((response) => {
-                    this.isLoading = false;
-                    // console.log(response);
                     productComponent.hideModal();
-                    this.getProducts();
-                    // 傳送API訊息至吐司元件
-                    this.$httpMessageState(response, '更新產品資料');
+                    const page = this.pagination.current_page;
+                    this.getProducts(page);
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 });
         },
         delProduct() {
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
             const delComponent = this.$refs.delModal;
-            this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.delete(api)
                 .then((response) => {
-                    this.isLoading = false;
                     console.log(response.data);
                     delComponent.hideModal();
                     this.getProducts();
-                    this.$httpMessageState(response, '刪除產品資料');
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 })
         },
     },
