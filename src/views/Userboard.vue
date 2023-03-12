@@ -3,16 +3,21 @@
     <div class="container-fluid">
         <router-view />
     </div>
+    <FooterBox></FooterBox>
 </template>
 
 <script>
 import emitter from '@/methods/emitter';
+import FooterBox from '../components/footer.vue';
 
 import { mapState, mapActions } from 'pinia';
 import statusStore from '@/stores/statusStore';
 import cartStore from '@/stores/cartStore';
 
 export default {
+    components: {
+        FooterBox,
+    },
     data() {
         return {
             // cart: {},
@@ -35,20 +40,4 @@ export default {
     },
 }
 
-// export default {
-//     data() {
-//         return {
-//             cart: [],
-//         };
-//     },
-//     setup() {
-//         provide('emitter', emitter);
-
-//         const cartStore = useCartStore();
-//         onMounted(async () => {
-//             await cartStore.getCart();
-//             this.cart = cartStore.cart;
-//         });
-//     }
-// };
 </script>
