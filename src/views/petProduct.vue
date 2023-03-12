@@ -14,18 +14,27 @@
             </ul>
         </div>
         <div class="col-md-9">
+            <div class="pageTitle">
+                <h3>寵物販售</h3>
+                <!-- 搜尋bar -->
+                <div class="searchBar">
+                    <input type="search" v-model="searchTerm" placeholder="輸入物品名稱" aria-describedby="button-add">
+                </div>
+            </div>
             <div class="row row-cols-2 row-cols-md-5 g-4 | productsCard">
-                <div class="col" v-for="item in sortProduct" :key="item.id">
+                <div class="col" v-for="item in filterSearch" :key="item.id">
                     <div class="card h-100">
-                        <div style="height: 100px; background-size: cover; background-position: center"
-                            :style="{ backgroundImage: `url(${item.imageUrl})` }"></div>
+                        <div style="height: 150px;
+                            background-size: cover;
+                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
                             <p class="card-subtitle">{{ item.description }}</p>
                             <div class="card-text">{{ item.content }}</div>
                         </div>
                         <div class="card-footer">
-                            <button type="button" class="btn btn-outline-danger" @click="addCart(item.id)"
+                            <button type="button" class="btn" @click="addCart(item.id)"
                                 :disabled="cartLoadingItem === item.id">
                                 <div class="spinner-grow spinner-grow-sm text-danger" role="status"
                                     v-if="cartLoadingItem === item.id">
@@ -51,12 +60,28 @@ export default {
     data() {
         return {
             product: {},
+            searchTerm: '',
         }
     },
     computed: {
         ...mapState(cartStore, ['sortProduct']),
         ...mapState(productStore, ['sortProduct']),
         ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
+        // 搜尋功能
+        filterSearch() {
+            const str = this.searchTerm;
+            const arr = [];
+            if (str.trim() === '') {
+                return this.sortProduct;
+            }
+            this.sortProduct.forEach((item) => {
+                if (item.title.includes(str) || item.description.includes(str) || item.content.includes(str)) {
+                    arr.push(item)
+                }
+            })
+
+            return [...new Set(arr)]
+        },
     },
     methods: {
         ...mapActions(cartStore, [
