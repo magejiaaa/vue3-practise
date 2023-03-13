@@ -17,6 +17,7 @@
                 <h3 class="titleH3">寵物販售</h3>
                 <!-- 搜尋bar -->
                 <div class="searchBar">
+                    <i class="bi bi-search"></i>
                     <input type="search" v-model="searchTerm" placeholder="輸入物品名稱" aria-describedby="button-add">
                 </div>
             </div>
@@ -24,8 +25,8 @@
                 <div class="col" v-for="item in filterSearch" :key="item.id">
                     <div class="card h-100">
                         <div style="height: 150px;
-                                    background-size: cover;
-                                    background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                                        background-size: cover;
+                                        background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
@@ -45,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            <Pages :pages="pagination" @emit-pages="getProducts" v-if="selectedMethod == ''"></Pages>
+            <Pages :pages="pagination" @emit-pages="getProducts" v-if="selectedMethod == '' && searchTerm == ''"></Pages>
         </div>
     </div>
 </template>
@@ -65,9 +66,10 @@ export default {
             searchTerm: '',
             getMethods: [
                 '貨幣兌換', '副本掉落', '採集製作',
-                '任務獎勵', '成就獎勵', '危命任務'
+                '任務獎勵', '成就獎勵', '危命任務',
             ],
             selectedMethod: '',
+            pets: [],
         }
     },
     components: {
@@ -84,16 +86,20 @@ export default {
             if (str.trim() === '') {
                 if (this.selectedMethod !== '') {
                     this.AllProducts.forEach((item) => {
-                        if (item.description.includes(this.selectedMethod)) {
+                        if (item.description.includes(this.selectedMethod) && item.category === '寵物') {
                             arr.push(item)
                         }
                     })
                 } else {
-                    return this.sortProduct;
+                    this.AllProducts.forEach((item) => {
+                        if (item.category === '寵物') {
+                            arr.push(item)
+                        }
+                    })
                 }
             } else {
                 this.AllProducts.forEach((item) => {
-                    if (item.title.includes(str) || item.description.includes(str) || item.content.includes(str)) {
+                    if (item.title.includes(str) || item.description.includes(str) || item.content.includes(str) && item.category === '寵物') {
                         arr.push(item)
                     }
                 })
