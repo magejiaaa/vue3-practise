@@ -1,5 +1,5 @@
 <template>
-  <UserMenu :cart="getCart.cart"></UserMenu>
+  <UserMenu :cart="getCart.cart" ref="Menu"></UserMenu>
   <div class="container-fluid">
     <div class="row">
       <div class="banner"></div>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { onMounted, ref, provide } from "vue";
+import { onMounted, ref, provide, nextTick, } from "vue";
 import emitter from '@/methods/emitter';
 
 // 取得購物車列表傳給navbar
@@ -147,11 +147,12 @@ export default {
 
 
     onMounted(() => {
+
       gsap.from(bannerText.value, {
         x: '-500px',
         opacity: 0,
         duration: 1,
-      })
+      });
 
       gsap.to(scrollText.value, {
         y: '13px',
@@ -203,7 +204,7 @@ export default {
         }
       });
 
-      tl.fromTo(FeatureList1.value, 
+      tl.fromTo(FeatureList1.value,
         {
           x: '200px',
           opacity: 0,
@@ -222,6 +223,24 @@ export default {
 
     });
 
+    // 子組件選單動畫
+    const Menu = ref(null)
+    onMounted(async () => {
+      await nextTick()
+      gsap.from(Menu.value.$el,
+        {
+          backgroundColor: '#000f2800',
+          duration: 1,
+          scrollTrigger: {
+          trigger: '.banner',
+          start: "80% 50%",
+          end: "bottom 30%",
+          scrub: true,
+          markers: false,
+        }
+        })
+    });
+
     // pinia CART
     const getCart = cartStore();
 
@@ -234,6 +253,7 @@ export default {
       GilImg,
       FeatureImg,
       // 動畫
+      Menu,
       scrollText,
       ItemBox,
       bannerText,

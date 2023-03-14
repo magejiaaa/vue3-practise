@@ -39,6 +39,10 @@
     }
 }
 
+.mobileFilter {
+    display: none;
+}
+
 .titleH3 {
     color: #000F28;
     vertical-align: middle;
@@ -80,6 +84,13 @@
 
 .productsCard {
     padding: 26px 0 37px 0;
+    a {
+        text-decoration: none;
+        transition: all 0.3s ease;
+        &:hover {
+            background: #f8f9fa;
+        }
+    }
     .card-title {
         font-size: 1em;
         font-weight: 700;
@@ -115,5 +126,29 @@
             background: #9747FF;
             color: #fff;
         }
+    }
+}
+
+@media screen and (max-width:767px) {
+    .classFilter {
+        padding: 0px;
+        background-color: #fff;
+        h3 {
+            display: none;
+        }
+        .mobileFilter {
+            padding: 14px 5%;
+            font-size: 1.25em;
+            border-bottom: 1px solid;
+            display: flex;
+            justify-content: space-between;
+            color: #000F28;
+        }
+    }
+    .pageTitle {
+        border-bottom: none;
+    }
+    .searchBar {
+        margin-bottom: 0px;
     }
 }
