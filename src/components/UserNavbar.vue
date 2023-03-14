@@ -1,11 +1,11 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-0 fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark p-0 fixed-top | topMenu">
         <header class="container-fluid p-0">
             <h1 class="m-0 ms-1 ms-md-4 | logo">
                 <router-link to="/" class="navbar-brand mb-0 h1 p-0" aria-current="page">亞馬烏羅提菜市場</router-link>
             </h1>
             <!-- 手機版 -->
-            <button class="m-0 me-md-4 | mobileMenu" type="button" aria-expanded="false"
+            <button class="m-0 me-1 me-md-4 | mobileMenu" type="button" aria-expanded="false"
                 @click="mobileMenuShow = !mobileMenuShow" :class="{ 'is-opened': mobileMenuShow }">
                 <span></span>
                 <span></span>
@@ -100,7 +100,7 @@ export default {
                         this.$router.push('/login');
                     }
                 });
-        }
-    }
+        },
+    },
 }
 </script>

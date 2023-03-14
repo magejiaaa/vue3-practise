@@ -2,16 +2,25 @@
     <Loading :active="isLoading"></Loading>
     <div class="row | innerPage">
         <div class="col-md-3 | classFilter">
+            <!-- 手機的條件篩選 -->
+            <button class="mobileFilter" @click.prevent="this.mobileFilterButton = !this.mobileFilterButton">
+                <span class="filterTitle">
+                    <i class="bi bi-funnel-fill"></i>條件篩選
+                </span>
+                <i class="bi bi-caret-down-fill"></i>
+            </button>
+            <!-- PC的篩選 -->
             <h3 class="titleH3"><i class="bi bi-funnel-fill"></i>條件篩選</h3>
-            <ul>
+            <ul v-if="mobileFilterButton">
                 <li>獲得方式</li>
                 <li><button @click="selectedMethod = ''">顯示全部</button></li>
                 <li v-for="(getMode, index) in getMethods" :key="index">
                     <!-- 選取的按鈕是selectedMethod -->
-                    <button @click="selectedMethod = getMode">{{ getMode }}</button>
+                    <button @click="clickGetMethods(getMode)">{{ getMode }}</button>
                 </li>
             </ul>
         </div>
+
         <div class="col-md-9 | rightPage">
             <div class="pageTitle">
                 <h3 class="titleH3">寵物販售</h3>
@@ -21,12 +30,13 @@
                     <input type="search" v-model="searchTerm" placeholder="輸入物品名稱" aria-describedby="button-add">
                 </div>
             </div>
-            <div class="row row-cols-2 row-cols-md-5 g-4 | productsCard">
-                <div class="col" v-for="item in filterSearch" :key="item.id">
-                    <div class="card h-100">
+            <div class="row row-cols-2 row-cols-lg-5 g-4 | productsCard">
+                <!-- 產品顯示 -->
+                <div class="col" v-for="item in paginatedProducts" :key="item.id">
+                    <a class="card h-100" @click="getProduct(item.id)">
                         <div style="height: 150px;
-                                        background-size: cover;
-                                        background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                            background-size: cover;
+                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
@@ -43,10 +53,11 @@
                                 加到購物車
                             </button>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
-            <Pages :pages="pagination" @emit-pages="getProducts" v-if="selectedMethod == '' && searchTerm == ''"></Pages>
+            <Pages :pages="pagination" :totalPages="totalPages" :currentPage="currentPage" @emit-pages="handlePageClick">
+            </Pages>
         </div>
     </div>
 </template>
@@ -57,7 +68,7 @@ import statusStore from '@/stores/statusStore';
 import productStore from '@/stores/productStore';
 import cartStore from '@/stores/cartStore'
 
-import Pages from '../components/PagesList.vue';
+import Pages from '../components/PagesListForUser.vue';
 
 export default {
     data() {
@@ -69,7 +80,9 @@ export default {
                 '任務獎勵', '成就獎勵', '危命任務',
             ],
             selectedMethod: '',
-            pets: [],
+            pageSize: 10,
+            currentPage: 1,
+            mobileFilterButton: window.innerWidth >= 768,
         }
     },
     components: {
@@ -77,13 +90,15 @@ export default {
     },
     computed: {
         ...mapState(cartStore, ['sortProduct']),
-        ...mapState(productStore, ['sortProduct', 'pagination', 'AllProducts']),
+        ...mapState(productStore, ['AllProducts']),
         ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
         // 搜尋功能
-        filterSearch() {
+        filteredProducts() {
             const str = this.searchTerm;
             const arr = [];
+            // 沒有搜索詞
             if (str.trim() === '') {
+                // 有選擇獲取來源時
                 if (this.selectedMethod !== '') {
                     this.AllProducts.forEach((item) => {
                         if (item.description.includes(this.selectedMethod) && item.category === '寵物') {
@@ -91,6 +106,7 @@ export default {
                         }
                     })
                 } else {
+                    // 顯示全部
                     this.AllProducts.forEach((item) => {
                         if (item.category === '寵物') {
                             arr.push(item)
@@ -98,16 +114,35 @@ export default {
                     })
                 }
             } else {
+                // 有搜索詞
                 this.AllProducts.forEach((item) => {
                     if (item.title.includes(str) || item.description.includes(str) || item.content.includes(str) && item.category === '寵物') {
-                        arr.push(item)
+                        arr.push(item);
                     }
                 })
             }
 
-
-            return [...new Set(arr)]
+            return [...new Set(arr)];
         },
+
+        totalPages() {
+            // 用篩選後的總筆數計算總共需要幾頁
+            return Math.ceil(this.filteredProducts.length / this.pageSize);
+        },
+
+        paginatedProducts() {
+            // 將此頁的資料放在這個陣列
+            return this.filteredProducts.slice(
+                (this.currentPage - 1) * this.pageSize,
+                this.currentPage * this.pageSize
+            );
+        },
+
+        pagination() {
+            // 將總頁數轉換陣列 EX:3頁轉成1,2,3
+            const pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+            return pages;
+        }
     },
     methods: {
         ...mapActions(cartStore, [
@@ -116,13 +151,22 @@ export default {
             'removeCartItem',
             'updateCart'
         ]),
-        ...mapActions(productStore, ['getProducts', 'getAllProducts']),
+        ...mapActions(productStore, ['getAllProducts']),
+        // 點選產品帶入產品ID
         getProduct(id) {
             this.$router.push(`/user/product/${id}`);
         },
+        // 傳入選取的頁數
+        handlePageClick(page) {
+            this.currentPage = page;
+        },
+        // 將關鍵字帶入並回到第一頁
+        clickGetMethods(getMode) {
+            this.selectedMethod = getMode;
+            this.currentPage = 1;
+        },
     },
     created() {
-        this.getProducts();
         this.getAllProducts();
     },
 }
