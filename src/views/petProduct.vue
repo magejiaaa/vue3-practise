@@ -14,7 +14,7 @@
             <div class="filterMenuBox" ref="filterMenuBox">
                 <ul ref="filterMenu">
                     <li>獲得方式</li>
-                    <li><button @click="selectedMethod = ''">顯示全部</button></li>
+                    <li><button @click="showAllProducts()">顯示全部</button></li>
                     <li v-for="(getMode, index) in getMethods" :key="index">
                         <!-- 選取的按鈕是selectedMethod -->
                         <button @click="clickGetMethods(getMode)">{{ getMode }}</button>
@@ -34,11 +34,16 @@
             </div>
             <div class="row row-cols-2 row-cols-lg-5 g-4 | productsCard">
                 <!-- 產品顯示 -->
-                <div class="col" v-for="item in paginatedProducts" :key="item.id">
+                <div class="col | cardContent" v-for="item in paginatedProducts" :key="item.id">
+                    <!-- 收藏的愛心 -->
+                    <button class="heartPosition" @click="toggleFillHeart(item)">
+                        <i class="bi | Favorite" :class="{ checked: this.isFavorite(item) }"></i>
+                    </button>
                     <a class="card h-100" @click="getProduct(item.id)">
                         <div style="height: 150px;
-                                        background-size: cover;
-                                        background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                            background-size: cover;
+                            background-position: center" 
+                            :style="{ backgroundImage: `url(${item.imageUrl})` }">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
@@ -68,7 +73,8 @@
 import { mapState, mapActions } from 'pinia';
 import statusStore from '@/stores/statusStore';
 import productStore from '@/stores/productStore';
-import cartStore from '@/stores/cartStore'
+import cartStore from '@/stores/cartStore';
+import favoriteStore from '@/stores/favorite';
 
 import Pages from '../components/PagesListForUser.vue';
 
@@ -87,6 +93,7 @@ export default {
             pageSize: 10,
             currentPage: 1,
             mobileFilterButton: window.innerWidth >= 768,
+            // fillHeart : false,
         }
     },
     components: {
@@ -96,6 +103,7 @@ export default {
         ...mapState(cartStore, ['sortProduct']),
         ...mapState(productStore, ['AllProducts']),
         ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
+        ...mapState(favoriteStore, ['favoriteItem']),
         // 搜尋功能
         filteredProducts() {
             const str = this.searchTerm;
@@ -106,7 +114,7 @@ export default {
                 if (this.selectedMethod !== '') {
                     this.AllProducts.forEach((item) => {
                         if (item.description.includes(this.selectedMethod) && item.category === '寵物') {
-                            arr.push(item)
+                            arr.push(item);
                         }
                     })
                 } else {
@@ -156,6 +164,7 @@ export default {
             'updateCart'
         ]),
         ...mapActions(productStore, ['getAllProducts']),
+        ...mapActions(favoriteStore, ['addToFavorites', 'removeFromFavorites', 'isFavorite', 'getLocalStorage']),
         // 點選產品帶入產品ID
         getProduct(id) {
             this.$router.push(`/user/product/${id}`);
@@ -168,6 +177,9 @@ export default {
         clickGetMethods(getMode) {
             this.selectedMethod = getMode;
             this.currentPage = 1;
+            if (window.innerWidth < 768) {
+                this.toggleFilter();
+            }
         },
         toggleFilter() {
             this.mobileFilterButton = !this.mobileFilterButton;
@@ -191,14 +203,33 @@ export default {
                 duration: 0.7,
             }, 0);
             // 反轉動畫
-            if (!this.mobileFilterButton && tl.isActive()) { 
+            if (!this.mobileFilterButton && tl.isActive()) {
                 menuTween.totalProgress(1);
                 menuTween.reverse();
             }
-        }
+        },
+        showAllProducts() {
+            this.selectedMethod = '';
+            if (window.innerWidth < 768) {
+                this.toggleFilter();
+            }
+        },
+        // 加入收藏
+        toggleFillHeart(item) {
+            if (this.isFavorite(item)) {
+                // 從 pinia 中刪除 item
+                this.removeFromFavorites(item);
+                item.fillHeart = !item.fillHeart;
+            } else {
+                // 將 item 添加到 pinia 中
+                this.addToFavorites(item);
+                item.fillHeart = !item.fillHeart;
+            }
+        },
     },
     created() {
         this.getAllProducts();
+        this.getLocalStorage();
     },
 }
 </script>
