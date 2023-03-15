@@ -146,6 +146,58 @@
     }
 }
 
+// 愛心收藏動畫
+.cardContent {
+    position: relative;
+}
+
+.heartPosition {
+    position: absolute;
+    top: 6px;
+    right: 13px;
+}
+
+// heart icon example
+$icon-fill: "\F415" !default; // heart fill
+$icon-empty: "\F417" !default; // heart empty
+$icon-fill-color: #A12C2C !default;
+
+$icon-size: 24px;
+
+.Favorite {
+    position: relative;
+    color: #fff;
+    font-size: $icon-size;
+    cursor: pointer;
+    background-color: transparent;
+    z-index: 3;
+    line-height: 1em;
+    text-shadow: 0px 0px 5px #6f6f6f;
+
+    &:before {
+        transition: all .3s ease-out;
+        content: $icon-empty; //default icon
+    }
+
+    &:hover:before {
+        transform: scale(1.2); //increase size on hover
+    }
+
+    &:active:before {
+        transition: none; //clear all transitions
+        transform: scale(1); //restore original size
+    }
+
+    &.checked {
+        color: $icon-fill-color;
+
+        &:before {
+            content: $icon-fill;
+        }
+    }
+}
+
+
 @media screen and (max-width:767px) {
     .classFilter {
         padding: 0px;
