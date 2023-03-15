@@ -3,22 +3,24 @@
     <div class="row | innerPage">
         <div class="col-md-3 | classFilter">
             <!-- 手機的條件篩選 -->
-            <button class="mobileFilter" @click.prevent="this.mobileFilterButton = !this.mobileFilterButton">
+            <button class="mobileFilter" @click.prevent="toggleFilter()">
                 <span class="filterTitle">
                     <i class="bi bi-funnel-fill"></i>條件篩選
                 </span>
-                <i class="bi bi-caret-down-fill"></i>
+                <i class="bi bi-caret-down-fill" ref="caret"></i>
             </button>
             <!-- PC的篩選 -->
             <h3 class="titleH3"><i class="bi bi-funnel-fill"></i>條件篩選</h3>
-            <ul v-if="mobileFilterButton">
-                <li>獲得方式</li>
-                <li><button @click="selectedMethod = ''">顯示全部</button></li>
-                <li v-for="(getMode, index) in getMethods" :key="index">
-                    <!-- 選取的按鈕是selectedMethod -->
-                    <button @click="clickGetMethods(getMode)">{{ getMode }}</button>
-                </li>
-            </ul>
+            <div class="filterMenuBox" ref="filterMenuBox">
+                <ul ref="filterMenu">
+                    <li>獲得方式</li>
+                    <li><button @click="selectedMethod = ''">顯示全部</button></li>
+                    <li v-for="(getMode, index) in getMethods" :key="index">
+                        <!-- 選取的按鈕是selectedMethod -->
+                        <button @click="clickGetMethods(getMode)">{{ getMode }}</button>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <div class="col-md-9 | rightPage">
@@ -35,8 +37,8 @@
                 <div class="col" v-for="item in paginatedProducts" :key="item.id">
                     <a class="card h-100" @click="getProduct(item.id)">
                         <div style="height: 150px;
-                            background-size: cover;
-                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                                        background-size: cover;
+                                        background-position: center" :style="{ backgroundImage: `url(${item.imageUrl})` }">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
@@ -69,6 +71,8 @@ import productStore from '@/stores/productStore';
 import cartStore from '@/stores/cartStore'
 
 import Pages from '../components/PagesListForUser.vue';
+
+import { gsap } from 'gsap';
 
 export default {
     data() {
@@ -165,6 +169,33 @@ export default {
             this.selectedMethod = getMode;
             this.currentPage = 1;
         },
+        toggleFilter() {
+            this.mobileFilterButton = !this.mobileFilterButton;
+            // 旋轉按鈕中的bi-caret-down-fill圖標
+            const caret = this.$refs.caret;
+            gsap.to(caret, {
+                rotation: this.mobileFilterButton ? 180 : 0,
+                duration: 1,
+                ease: "power1".easeInOut,
+            })
+
+            // 展開選單動畫(同時播放)
+            const tl = gsap.timeline();
+            const menuTween = tl.to(this.$refs.filterMenuBox, {
+                height: this.mobileFilterButton ? '424px' : '0px',
+                ease: "power1".easeInOut,
+                duration: 0.7,
+            }).to(this.$refs.filterMenu, {
+                opacity: this.mobileFilterButton ? 100 : 0,
+                ease: "power1".easeInOut,
+                duration: 0.7,
+            }, 0);
+            // 反轉動畫
+            if (!this.mobileFilterButton && tl.isActive()) { 
+                menuTween.totalProgress(1);
+                menuTween.reverse();
+            }
+        }
     },
     created() {
         this.getAllProducts();
