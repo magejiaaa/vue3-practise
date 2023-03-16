@@ -42,8 +42,7 @@
                     <a class="card h-100" @click="getProduct(item.id)">
                         <div style="height: 150px;
                             background-size: cover;
-                            background-position: center" 
-                            :style="{ backgroundImage: `url(${item.imageUrl})` }">
+                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ item.title }}</h5>
@@ -172,6 +171,8 @@ export default {
         // 傳入選取的頁數
         handlePageClick(page) {
             this.currentPage = page;
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         },
         // 將關鍵字帶入並回到第一頁
         clickGetMethods(getMode) {
