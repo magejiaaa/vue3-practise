@@ -1,5 +1,5 @@
 <template>
-  <UserMenu :cart="getCart.cart" ref="Menu"></UserMenu>
+  <UserMenu :cart="cartStore.cart" ref="Menu"></UserMenu>
   <div class="container-fluid">
     <div class="row">
       <div class="banner"></div>
@@ -107,7 +107,7 @@ import { onMounted, ref, provide, nextTick, } from "vue";
 import emitter from '@/methods/emitter';
 
 // 取得購物車列表傳給navbar
-import cartStore from '@/stores/cartStore';
+import useCartStore from '@/stores/cartStore';
 
 import FooterBox from '../components/footer.vue';
 import { gsap } from 'gsap';
@@ -242,7 +242,8 @@ export default {
     });
 
     // pinia CART
-    const getCart = cartStore();
+    const cartStore = useCartStore();
+    cartStore.getCart();
 
     return {
       // 圖片
@@ -261,9 +262,7 @@ export default {
       FeatureGroup,
       FeatureList1,
       FeatureList2,
-      // pinia
-      getCart
-
+      cartStore,
     }
   },
 }

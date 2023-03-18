@@ -27,11 +27,28 @@
                         <li class="nav-item">
                             <router-link to="/dashboard/coupon" class=" active" aria-current="page">購買Gil</router-link>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" style="position: relative;" @mouseenter="isCartOpen = true;
+                        isUserOpen = false;">
+                            <span class="cartsLength" v-if="cart.carts">{{ cart.carts.length }}</span>
                             <router-link to="/dashboard/coupon" class=" active" aria-current="page">
                                 <i class="bi bi-cart3"></i>
                                 購物車
                             </router-link>
+                            <div class="cartMenu">
+                                <transition name="cartMenu">
+                                    <ul class="cartPreview" v-if="cart.carts" @mouseleave="isCartOpen = false"
+                                        v-show="isCartOpen">
+                                        <li v-for="(item, id) in cart.carts" :key="id">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            <div class="cartImg"
+                                                :style="{ backgroundImage: `url(${item.product.imagesUrl ? item.product.imagesUrl[0] : item.product.imageUrl})` }"
+                                                @click="getProduct(item.id)">
+                                            </div>
+                                            {{ item.product.title }}
+                                        </li>
+                                    </ul>
+                                </transition>
+                            </div>
                         </li>
                         <!-- 使用者選單手機版 -->
                         <li class="nav-item | mobileUserIcon">
@@ -46,7 +63,8 @@
                         </li>
                     </ul>
                     <!-- 使用者選單 -->
-                    <div class="userBtn" @mouseenter="isUserOpen = true">
+                    <div class="userBtn" @mouseenter="isUserOpen = true;
+                    isCartOpen = false;">
                         <a class="userIcon">
                             <i class="bi bi-person-circle"></i>
                         </a>
@@ -81,6 +99,7 @@ export default {
             shown: false,
             // 下拉選單
             isUserOpen: false,
+            isCartOpen: false,
             mobileMenuShow: false,
         }
     },
@@ -100,6 +119,10 @@ export default {
                         this.$router.push('/login');
                     }
                 });
+        },
+        // 點選產品帶入產品ID
+        getProduct(id) {
+            this.$router.push(`/user/product/${id}`);
         },
     },
 }
