@@ -25,20 +25,35 @@
                 </swiper-container>
                 <img :src="product.imageUrl" alt="" class="img-fluid mb-3">
             </div>
-            <div class="col-md-8">
-                <h2>{{ product.title }}</h2>
-                <button  @click="toggleFillHeart(product)">
-                        <i class="bi | Favorite" :class="{ checked: this.isFavorite(product) }"></i>
-                    </button>
-                <div>{{ product.content }}</div>
-                <div>{{ product.description }}</div>
-                <div class="h5" v-if="!product.price">{{ product.origin_price }} 元</div>
-                <del class="h6" v-if="product.price">原價 {{ product.origin_price }} 元</del>
-                <div class="h5" v-if="product.price">現在只要 {{ product.price }} 元</div>
-                <hr>
-                <button type="button" class="btn btn-outline-danger" @click="addToCart(product.id)">
-                    加到購物車
-                </button>
+            <!-- 商品內容 -->
+            <div class="col-md-8 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="proTitle">
+                        <div>
+                            <h2>{{ product.title }}</h2>
+                            <div class="proDescription">{{ product.description }}</div>
+                        </div>
+                        <button @click="toggleFillHeart(product)">
+                            <i class="bi | Favorite" :class="{ checked: this.isFavorite(product) }"></i>
+                        </button>
+                    </div>
+                    <div class="proContent">{{ product.content }}</div>
+                </div>
+                <div>
+                    <div class="proPrice">
+                        <div v-if="!product.price">NT$ <span>{{ product.origin_price }} </span></div>
+                        <del v-if="product.price">NT$ {{ product.origin_price }} </del>
+                        <div v-if="product.price">NT$ <span>{{ product.price }} </span></div>
+                    </div>
+                    <div class="proQuantity">
+                        <span class="input-number-decrement" @click="this.quantity > 1 ? this.quantity-- : null">–</span>
+                        <input class="input-number" type="number" v-model="quantity" min="1">
+                        <span class="input-number-increment" @click="this.quantity++">+</span>
+                        <button type="button" class="normalBtn" @click="addCart(product.id, quantity)">
+                            加到購物車
+                        </button>
+                    </div>
+                </div>
             </div>
         </article>
     </div>
@@ -47,12 +62,15 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import favoriteStore from '@/stores/favorite';
+import cartStore from '@/stores/cartStore';
+
 export default {
     data() {
         return {
             product: {},
             id: '',
             swiperOptions: {},
+            quantity: 1,
         }
     },
     computed: {
@@ -60,6 +78,7 @@ export default {
     },
     methods: {
         ...mapActions(favoriteStore, ['addToFavorites', 'removeFromFavorites', 'isFavorite', 'getLocalStorage']),
+        ...mapActions(cartStore, ['addCart']),
         getProduct() {
             const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`;
             this.isLoading = true;
@@ -80,6 +99,9 @@ export default {
                 // array with CSS styles
                 injectStyles: [
                     `
+                    .swiper-horizontal {
+                        padding-bottom: 20px;
+                    }
                     .swiper-button-next, .swiper-button-prev {
                         opacity: 0;
                         transition: all 0.3s ease;

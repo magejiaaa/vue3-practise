@@ -12,20 +12,21 @@ export default defineStore('cartStore', {
     actions: {
         // 可以使用this存取state資料
         // 檢查this相關的參數能不能用
-        addCart(id) {
+        addCart(id, quantity = 1) {
             const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
             status.cartLoadingItem = id;
             // 要按照api的格式post
             const cart = {
                 product_id: id,
-                qty: 1,
+                qty: quantity,
             }
             axios.post(url, { data: cart })
                 .then((res) => {
                     status.cartLoadingItem = '';
                     console.log(res);
                     this.getCart();
-                    status.pushMessage({ title: '加入購物車' });
+                    const data = { title: res.data.message };
+                    status.pushMessage(data);
                 })
         },
         getCart() {

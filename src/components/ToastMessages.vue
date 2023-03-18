@@ -1,6 +1,6 @@
 <template>
     <!-- 負責定位+列表 -->
-    <div class="toast-container position-absolute pe-3 top-0 end-0">
+    <div class="toast-container position-absolute pe-3 mt-3 end-0">
       <Toast v-for="(msg, key) in messages" :key="key"
         :msg="msg"
       />

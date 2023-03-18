@@ -1,5 +1,6 @@
 <template>
     <Loading :active="isLoading"></Loading>
+    <Toast></Toast>
     <div class="row | innerPage">
         <div class="col-md-3 | classFilter">
             <!-- 手機的條件篩選 -->
@@ -39,12 +40,13 @@
                     <button class="heartPosition" @click="toggleFillHeart(item)">
                         <i class="bi | Favorite" :class="{ checked: this.isFavorite(item) }"></i>
                     </button>
-                    <a class="card h-100" @click="getProduct(item.id)">
+                    <a class="card h-100">
                         <div style="height: 150px;
                             background-size: cover;
-                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }">
+                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }"
+                            @click="getProduct(item.id)">
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" @click="getProduct(item.id)">
                             <h5 class="card-title">{{ item.title }}</h5>
                             <p class="card-subtitle">{{ item.description }}</p>
                             <div class="card-text">{{ item.content }}</div>
@@ -76,6 +78,7 @@ import cartStore from '@/stores/cartStore';
 import favoriteStore from '@/stores/favorite';
 
 import Pages from '../components/PagesListForUser.vue';
+import Toast from '../components/ToastMessages.vue';
 
 import { gsap } from 'gsap';
 
@@ -97,6 +100,7 @@ export default {
     },
     components: {
         Pages,
+        Toast,
     },
     computed: {
         ...mapState(cartStore, ['sortProduct']),

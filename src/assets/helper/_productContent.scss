@@ -1,37 +1,156 @@
+article {
+    min-height: 400px;
+}
+
 .breadBox {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 40px 0;
+
     .breadcrumb {
         margin-bottom: 0px;
     }
+
     a {
         text-decoration: none;
         color: #828282;
+
         &:hover {
             color: #3b3b3b;
         }
     }
+
     button {
         border: none;
         background-color: transparent;
         color: #828282;
+
         &:hover {
             color: #3b3b3b;
         }
     }
+
     span {
         vertical-align: middle;
         margin-left: 5px;
     }
 }
+
 // 圖片投影片
 .lightBox {
     text-align: center;
 }
+
 :root {
     --swiper-theme-color: #9747ff;
     --swiper-pagination-bottom: 0px;
 
+}
+
+.proTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #828282;
+    padding-bottom: 20px;
+
+    h2 {
+        margin-bottom: 0;
+        font-weight: 700;
+        font-size: 1.25em;
+        color: #000F28;
+    }
+
+    button {
+        border: none;
+        background: transparent;
+    }
+
+    .Favorite {
+        text-shadow: none;
+        vertical-align: middle;
+    }
+}
+
+.proDescription {
+    color: #828282;
+}
+
+.proContent {
+    padding: 20px 0;
+}
+
+.proPrice {
+    display: flex;
+    align-items: flex-end;
+    font-size: 1.5em;
+    font-weight: 400;
+    margin-bottom: 20px;
+
+    del {
+        color: #828282;
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+
+    span {
+        font-size: 2em;
+        font-weight: 700;
+        line-height: 1em;
+    }
+}
+
+// 數量input
+.proQuantity {
+    display: flex;
+    align-items: stretch;
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-number {
+    width: 80px;
+    padding: 11px 12px;
+    vertical-align: top;
+    text-align: center;
+    outline: none;
+    line-height: 1em;
+}
+
+.input-number,
+.input-number-decrement,
+.input-number-increment {
+    border: 1px solid #ccc;
+    user-select: none;
+}
+
+.input-number-decrement,
+.input-number-increment {
+    display: inline-block;
+    padding: 15px;
+    line-height: 1.5em;
+    background: #f1f1f1;
+    color: #444;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:active {
+        background: #ddd;
+    }
+}
+
+.input-number-decrement {
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment {
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    margin-right: 30px;
 }
