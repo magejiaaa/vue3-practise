@@ -3,7 +3,7 @@
     <div class="container | innerPage">
         <nav aria-label="breadcrumb" class="breadBox">
             <router-link to>
-                <button @click="$router.back(-1)">
+                <button @click="$router.push('/user/petProduct')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M17.77 3.77L16 2L6 12L16 22L17.77 20.23L9.54 12L17.77 3.77Z" fill="#828282" />
                     </svg>
@@ -50,6 +50,10 @@
                         <input class="input-number" type="number" v-model="quantity" min="1">
                         <span class="input-number-increment" @click="this.quantity++">+</span>
                         <button type="button" class="normalBtn" @click="addCart(product.id, quantity)">
+                            <div class="spinner-grow spinner-grow-sm text-light" role="status"
+                                v-if="cartLoadingItem === this.product.id">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
                             加到購物車
                         </button>
                     </div>
@@ -63,6 +67,7 @@
 import { mapState, mapActions } from 'pinia';
 import favoriteStore from '@/stores/favorite';
 import cartStore from '@/stores/cartStore';
+import statusStore from '@/stores/statusStore';
 
 export default {
     data() {
@@ -75,12 +80,13 @@ export default {
     },
     computed: {
         ...mapState(favoriteStore, ['favoriteItem']),
+        ...mapState(statusStore, ['cartLoadingItem']),
     },
     methods: {
         ...mapActions(favoriteStore, ['addToFavorites', 'removeFromFavorites', 'isFavorite', 'getLocalStorage']),
         ...mapActions(cartStore, ['addCart']),
-        getProduct() {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`;
+        getProduct(id) {
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${id}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.get(url)
@@ -138,10 +144,19 @@ export default {
             }
         },
     },
+    watch: {
+        $route(to, from) {
+            // 判斷 $route.params.productId 是否有變化
+            if (to.params.productId !== from.params.productId) {
+                this.getProduct(this.$route.params.productId);
+                this.getLocalStorage();
+            }
+        }
+    },
     created() {
         // 從router取得ID
         this.id = this.$route.params.productId;
-        this.getProduct();
+        this.getProduct(this.id);
         this.getLocalStorage();
     },
     mounted() {

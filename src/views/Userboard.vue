@@ -1,7 +1,7 @@
 <template>
-    <UserMenu :cart="cart"></UserMenu>
+    <UserMenu :cart="cart" @navCart="handleNavCart"></UserMenu>
     <div class="container-fluid">
-        <router-view />
+        <router-view></router-view>
     </div>
     <FooterBox></FooterBox>
 </template>
@@ -33,7 +33,10 @@ export default {
         ...mapState(cartStore, ['cart']),
     },
     methods: {
-        ...mapActions(cartStore, ['getCart']),
+        ...mapActions(cartStore, ['getCart', 'removeCartItem']),
+        handleNavCart(id) {
+            this.removeCartItem(id);
+        }
     },
     created() {
         this.getCart();

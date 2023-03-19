@@ -39,12 +39,17 @@
                                     <ul class="cartPreview" v-if="cart.carts" @mouseleave="isCartOpen = false"
                                         v-show="isCartOpen">
                                         <li v-for="(item, id) in cart.carts" :key="id">
-                                            <i class="bi bi-x-circle-fill"></i>
-                                            <div class="cartImg"
-                                                :style="{ backgroundImage: `url(${item.product.imagesUrl ? item.product.imagesUrl[0] : item.product.imageUrl})` }"
-                                                @click="getProduct(item.id)">
+                                            <!-- 購物車刪除 -->
+                                            <i class="bi bi-x-circle-fill" @click="emitCart(item.id)"></i>
+                                            <div class="d-flex align-items-center w-100" @click="getProduct(item.product_id)">
+                                                <div class="cartImg"
+                                                    :style="{ backgroundImage: `url(${item.product.imagesUrl ? item.product.imagesUrl[0] : item.product.imageUrl})` }">
+                                                </div>
+                                                <div class="cartText">
+                                                <span>{{ item.product.title }}</span>
+                                                <span>x{{ item.qty }}</span>
+                                                </div>
                                             </div>
-                                            {{ item.product.title }}
                                         </li>
                                     </ul>
                                 </transition>
@@ -122,7 +127,13 @@ export default {
         },
         // 點選產品帶入產品ID
         getProduct(id) {
-            this.$router.push(`/user/product/${id}`);
+            this.$router.push({
+                path: `/user/product/${id}`,
+                params: { productId: id }
+            });
+        },
+        emitCart(id) {
+            this.$emit('navCart', id);
         },
     },
 }
