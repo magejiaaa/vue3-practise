@@ -147,6 +147,13 @@
     }
 }
 
+.productCardImg {
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 0.375rem 0.375rem 0 0;
+}
+
 // 愛心收藏動畫
 .cardContent {
     position: relative;

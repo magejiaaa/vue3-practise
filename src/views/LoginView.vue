@@ -69,7 +69,7 @@ export default {
                         // console.log( token, expired );
                         document.cookie = `hexToken=${token}; expirex=${new Date(expired)}`;
                         // console.log(res);
-                        this.$router.push('/dashboard/products');
+                        this.$router.back(1);
                     }
                 });
         },

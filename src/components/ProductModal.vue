@@ -45,6 +45,7 @@
                                 新增圖片
                             </button>
                         </div>
+                        <!-- 產品敘述 -->
                         <div class="col-sm-8">
                             <div class="mb-3">
                                 <label for="title" class="form-label">標題</label>
@@ -53,10 +54,16 @@
                             </div>
 
                             <div class="row gx-2">
-                                <div class="mb-3 col-md-6">
+                                <div class="mb-3 col-md-6 | selectInput">
+                                    <i class="bi bi-caret-down-fill"></i>
                                     <label for="category" class="form-label">分類</label>
-                                    <input type="text" class="form-control" id="category" placeholder="請輸入分類"
-                                        v-model="tempProduct.category">
+                                    <select name="category" id="category" class="form-control" v-model="tempProduct.category">
+                                        <option value="" disabled>請選擇分類</option>
+                                        <option value="寵物">寵物</option>
+                                        <option value="坐騎">坐騎</option>
+                                        <option value="代打代練">代打代練</option>
+                                        <option value="Gil">Gil</option>
+                                    </select>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label for="price" class="form-label">單位</label>
