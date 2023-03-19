@@ -16,10 +16,16 @@
                 <div class="navbar-collapse justify-content-end me-lg-4 | showMenu" v-show="mobileMenuShow">
                     <ul class="navbar-nav | menu">
                         <li class="nav-item">
-                            <router-link to="/user/petProduct" class=" active" aria-current="page">寵物販售</router-link>
+                            <router-link :to="{
+                                name: 'AllProduct',
+                                params: { pageName: '寵物' }
+                            }" class=" active" aria-current="page">寵物販售</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link to="/dashboard/order" class=" active" aria-current="page">坐騎販售</router-link>
+                            <router-link :to="{
+                                name: 'AllProduct',
+                                params: { pageName: '坐騎' }
+                            }" class=" active" aria-current="page">坐騎販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link to="/dashboard/coupon" class=" active" aria-current="page">代打帶練</router-link>
@@ -40,14 +46,16 @@
                                         v-show="isCartOpen">
                                         <li v-for="(item, id) in cart.carts" :key="id">
                                             <!-- 購物車刪除 -->
-                                            <i class="bi bi-x-circle-fill" @click="emitCart(item.id)"></i>
-                                            <div class="d-flex align-items-center w-100" @click="getProduct(item.product_id)">
+                                            <i class="bi bi-x-circle-fill" @click="emitCart(item.id)"
+                                                :disabled="cartLoadingItem === item.id"></i>
+                                            <div class="d-flex align-items-center w-100"
+                                                @click="getProduct(item.product_id)">
                                                 <div class="cartImg"
                                                     :style="{ backgroundImage: `url(${item.product.imagesUrl ? item.product.imagesUrl[0] : item.product.imageUrl})` }">
                                                 </div>
                                                 <div class="cartText">
-                                                <span>{{ item.product.title }}</span>
-                                                <span>x{{ item.qty }}</span>
+                                                    <span>{{ item.product.title }}</span>
+                                                    <span>x{{ item.qty }}</span>
                                                 </div>
                                             </div>
                                         </li>
@@ -96,6 +104,10 @@ export default {
             type: Object,
             default() { return {}; },
         },
+        cartLoadingItem: {
+            type: String,
+            default: ''
+        }
     },
     data() {
         return {
@@ -132,6 +144,7 @@ export default {
                 params: { productId: id }
             });
         },
+        // 將更新的購物車傳給userBoard
         emitCart(id) {
             this.$emit('navCart', id);
         },

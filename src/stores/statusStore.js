@@ -12,6 +12,9 @@ export default defineStore('statusStore', {
             const { title = '成功', content, style = 'success' } = data;
             console.log(data);
             this.messages.push({ style, title, content });
+        },
+        cleanMessage() {
+            this.messages = [];
         }
     },
 })

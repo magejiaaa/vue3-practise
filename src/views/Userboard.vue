@@ -1,5 +1,5 @@
 <template>
-    <UserMenu :cart="cart" @navCart="handleNavCart"></UserMenu>
+    <UserMenu :cart="cart" :cartLoadingItem="cartLoadingItem" @navCart="handleNavCart"></UserMenu>
     <div class="container-fluid">
         <router-view></router-view>
     </div>

@@ -3,7 +3,7 @@
     <div class="container | innerPage">
         <nav aria-label="breadcrumb" class="breadBox">
             <router-link to>
-                <button @click="$router.push('/user/petProduct')">
+                <button @click="goToAllProduct()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M17.77 3.77L16 2L6 12L16 22L17.77 20.23L9.54 12L17.77 3.77Z" fill="#828282" />
                     </svg>
@@ -76,6 +76,7 @@ export default {
             id: '',
             swiperOptions: {},
             quantity: 1,
+            pageName: '',
         }
     },
     computed: {
@@ -143,6 +144,11 @@ export default {
                 item.fillHeart = !item.fillHeart;
             }
         },
+        // 返回列表
+        goToAllProduct() {
+            this.pageName = this.product.category;
+            this.$router.push(`/user/AllProduct/${this.pageName}`)
+        }
     },
     watch: {
         $route(to, from) {

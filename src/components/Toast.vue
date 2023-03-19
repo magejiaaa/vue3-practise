@@ -22,7 +22,7 @@
     mounted() {
       const toastEl = this.$refs.toast;
       const toast = new Toast(toastEl, {
-        delay: 6000,
+        delay: 3000,
       });
       toast.show();
     },
