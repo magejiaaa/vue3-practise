@@ -1,7 +1,7 @@
 <template>
     <Loading :active="isLoading"></Loading>
-    <Toast></Toast>
     <div class="row | innerPage">
+        <Toast></Toast>
         <div class="col-md-3 | classFilter">
             <!-- 手機的條件篩選 -->
             <button class="mobileFilter" @click.prevent="toggleFilter()">
@@ -26,7 +26,7 @@
 
         <div class="col-md-9 | rightPage">
             <div class="pageTitle">
-                <h3 class="titleH3">寵物販售</h3>
+                <h3 class="titleH3">{{pageName}}販售</h3>
                 <!-- 搜尋bar -->
                 <div class="searchBar">
                     <i class="bi bi-search"></i>
@@ -42,19 +42,20 @@
                     </button>
                     <a class="card h-100">
                         <div style="height: 150px;
-                            background-size: cover;
-                            background-position: center" :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }"
+                                background-size: cover;
+                                background-position: center"
+                            :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }"
                             @click="getProduct(item.id)">
                         </div>
                         <div class="card-body" @click="getProduct(item.id)">
                             <h5 class="card-title">{{ item.title }}</h5>
                             <p class="card-subtitle">{{ item.description }}</p>
-                            <div class="card-text">{{ item.content }}</div>
+                            <!-- <div class="card-text">{{ item.content }}</div> -->
                         </div>
                         <div class="card-footer">
                             <button type="button" class="btn" @click="addCart(item.id)"
                                 :disabled="cartLoadingItem === item.id">
-                                <div class="spinner-grow spinner-grow-sm text-danger" role="status"
+                                <div class="spinner-grow spinner-grow-sm text-primary" role="status"
                                     v-if="cartLoadingItem === item.id">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
@@ -98,6 +99,12 @@ export default {
             // fillHeart : false,
         }
     },
+    props: {
+        pageName: {
+            type: String,
+            required: true
+        }
+    },
     components: {
         Pages,
         Toast,
@@ -116,14 +123,14 @@ export default {
                 // 有選擇獲取來源時
                 if (this.selectedMethod !== '') {
                     this.AllProducts.forEach((item) => {
-                        if (item.description.includes(this.selectedMethod) && item.category === '寵物') {
+                        if (item.description.includes(this.selectedMethod) && item.category === this.pageName) {
                             arr.push(item);
                         }
                     })
                 } else {
                     // 顯示全部
                     this.AllProducts.forEach((item) => {
-                        if (item.category === '寵物') {
+                        if (item.category === this.pageName) {
                             arr.push(item)
                         }
                     })

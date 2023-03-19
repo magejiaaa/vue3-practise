@@ -9,6 +9,7 @@
   
 <script>
 import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 import Toast from '@/components/Toast.vue';
 import statusStore from '@/stores/statusStore';
 
@@ -17,9 +18,12 @@ export default {
   setup() {
     const status = statusStore();
     const { messages } = storeToRefs(status);
+    onMounted(() => {
+      status.cleanMessage();
+    })
 
     return {
-      messages,
+      messages
     }
   },
 };

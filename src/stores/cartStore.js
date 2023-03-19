@@ -41,17 +41,20 @@ export default defineStore('cartStore', {
                 })
                 .catch((error) => {
                     console.log(error);
+                    const data = { title: '無法取得購物車列表', style: 'danger' };
+                    status.pushMessage(data);
                 })
         },
         removeCartItem(id) {
             const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
-            status.isLoading = true;
+            status.cartLoadingItem = id;
             axios.delete(url)
                 .then((res) => {
-                    status.isLoading = false;
+                    status.cartLoadingItem = '';
                     console.log(res);
                     this.getCart();
-                    // this.$httpMessageState(res, '刪除產品');
+                    const data = { title: '購物車商品'+res.data.message };
+                    status.pushMessage(data);
                 })
         },
         updateCart(item) {
