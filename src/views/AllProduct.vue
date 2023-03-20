@@ -26,7 +26,7 @@
 
         <div class="col-md-9 | rightPage">
             <div class="pageTitle">
-                <h3 class="titleH3">{{pageName}}販售</h3>
+                <h3 class="titleH3">{{ pageName }}販售</h3>
                 <!-- 搜尋bar -->
                 <div class="searchBar">
                     <i class="bi bi-search"></i>
@@ -41,10 +41,8 @@
                         <i class="bi | Favorite" :class="{ checked: this.isFavorite(item) }"></i>
                     </button>
                     <a class="card h-100">
-                        <div style="height: 150px;
-                                background-size: cover;
-                                background-position: center"
-                            :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})` }"
+                        <div class="productCardImg"
+                            :style="{ backgroundImage: `url(${item.imageUrl || item.imagesUrl[0]})`, backgroundColor: pageName === '坐騎' ? 'black' : '' }"
                             @click="getProduct(item.id)">
                         </div>
                         <div class="card-body" @click="getProduct(item.id)">
@@ -96,7 +94,6 @@ export default {
             pageSize: 10,
             currentPage: 1,
             mobileFilterButton: window.innerWidth >= 768,
-            // fillHeart : false,
         }
     },
     props: {
