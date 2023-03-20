@@ -42,7 +42,7 @@
                         <li class="nav-item" style="position: relative;" @mouseenter="isCartOpen = true;
                         isUserOpen = false;">
                             <span class="cartsLength" v-if="cart.carts">{{ cart.carts.length }}</span>
-                            <router-link to="/dashboard/coupon" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">
+                            <router-link to="/user/cart" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">
                                 <i class="bi bi-cart3"></i>
                                 購物車
                             </router-link>
@@ -65,7 +65,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <router-link to="/" class="checkCart">結帳</router-link>
+                                        <router-link to="/user/cart" class="checkCart">結帳</router-link>
                                     </ul>
                                 </transition>
                             </div>
@@ -181,7 +181,6 @@ export default {
                 if (res.data.success) {
                     this.isLogin = true;
                 }
-                console.log(res);
             });
     },
 }

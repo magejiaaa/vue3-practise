@@ -78,6 +78,10 @@
         margin: 0;
         padding: 0 8px;
         border-bottom: 1px solid #adb5bd;
+        transition: all 0.3s ease;
+        &:hover {
+            background-color: #dee2e6;
+        }
     }
 
     i {

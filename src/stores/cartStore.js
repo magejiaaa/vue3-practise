@@ -58,9 +58,8 @@ export default defineStore('cartStore', {
                 })
         },
         updateCart(item) {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item}`;
-            status.isLoading = true;
-            status.cartLoadingItem = item.id;
+            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
+            status.cartLoadingItem = item.product_id;
             // 要傳遞的資訊
             const cart = {
                 product_id: item.product_id,
@@ -72,7 +71,8 @@ export default defineStore('cartStore', {
                         status.cartLoadingItem = '';
                         console.log(res);
                         this.getCart();
-                        // this.$httpMessageState(res, '更新購物車');
+                        const data = { title: '購物車商品'+res.data.message };
+                        status.pushMessage(data);
                     }
                 })
         },
