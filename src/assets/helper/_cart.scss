@@ -1,5 +1,6 @@
 .cartCard {
     margin-top: 10px;
+
     .card {
         margin: 18px 0;
         background: #FFFFFF;
@@ -18,15 +19,18 @@
     font-weight: 700;
     font-size: 1.25em;
     color: #000F28;
+
     a {
         position: absolute;
         left: 0px;
     }
+
     button {
         border: none;
         background-color: transparent;
         color: #828282;
     }
+
     span {
         vertical-align: middle;
         margin-left: 5px;
@@ -38,6 +42,7 @@
     width: 40%;
     display: flex;
     align-items: center;
+
     .cartImg {
         margin: 0;
         margin-right: 20px;
@@ -48,18 +53,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     span {
         padding: 5px 10px;
         width: 20%;
     }
+
     i {
         font-size: 1.25em;
         padding: 10px;
         color: red;
         cursor: pointer;
+
         &:hover {
             color: rgb(198, 0, 0);
         }
+
         &[disabled="true"] {
             color: #ffb4b4;
         }
@@ -72,9 +81,11 @@
     border-radius: 15px;
     padding: 30px;
     margin-bottom: 40px;
+
     .input-group {
         width: 50%;
     }
+
     button {
         color: #fff;
         background: #9747FF;
@@ -100,30 +111,55 @@
     color: #4B178E;
     background: rgba(151, 71, 255, 0.3);
     border-radius: 15px;
-    padding: 30px;
     margin-top: 36px;
     max-width: 375px;
     height: 80vh;
+    overflow: hidden;
+    .scrollBarStyle {
+        overflow: scroll;
+        padding: 30px;
+        &::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #ffffff94;
+        }
+        &::-webkit-scrollbar
+        {
+            width: 5px;
+            background-color: #ffffff94;
+        }
+        &::-webkit-scrollbar-thumb
+        {
+            background-color: #ae70ff;
+            border: 1px solid #9747ff;
+            border-radius: 5px;
+        }
+    }
+
     p {
         font-weight: 700;
         font-size: 1.25em;
         text-align: center;
         color: #4B178E;
     }
+
     .form-control {
         background: rgba(255, 255, 255, 0.5);
         border: 1px solid #9747FF;
         border-radius: 5px;
         color: #4B178E;
+        min-height: 1.5em;
         max-height: 14vh;
+
         &:focus {
             color: #4B178E;
         }
     }
+
     label {
         margin: 0;
     }
 }
+
 .fixForm {
     position: fixed;
     right: 0;
