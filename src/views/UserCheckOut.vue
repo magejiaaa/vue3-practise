@@ -67,24 +67,18 @@
                     </div>
                     <div>
                         <span>總計 NT$ </span>
-                        <span class="priceBox" :class="{ 'bigPrice': cart.final_total == cart.total }">{{
-                            $filters.currency(cart.total) }}</span>
+                        <span class="priceBox">{{ $filters.currency(getOriginPrice) }}</span>
                     </div>
                 </div>
                 <!-- 有優惠券才會出現 -->
-                <div style="color: red;" v-if="cart.final_total !== cart.total">
-                    <div class="d-flex justify-content-between align-items-center my-2">
-                        <div class="input-group">
-                            <span>已套用優惠券！</span>
-                        </div>
-                        <div>
-                            <span>優惠券折扣 NT$ </span>
-                            <span class="priceBox">{{ $filters.currency(cart.final_total - cart.total) }}</span>
-                        </div>
+                <div style="color: red;" v-if="getOriginPrice !== order.total">
+                    <div class="text-end">
+                        <span>優惠券折扣 NT$ </span>
+                        <span class="priceBox">{{ $filters.currency(order.total - getOriginPrice) }}</span>
                     </div>
                     <p class="text-end m-0">折扣後價格
                         <span>NT$ </span>
-                        <span class="bigPrice">{{ $filters.currency(cart.final_total) }}</span>
+                        <span class="bigPrice">{{ $filters.currency(order.total) }}</span>
                     </p>
                 </div>
             </div>
@@ -100,7 +94,7 @@
                     <tr v-for="item in order.products" :key="item.product_id">
                         <td>{{ item.product.title }}</td>
                         <td>{{ item.qty }} / {{ item.product.unit }}</td>
-                        <td class="text-end">{{ item.final_total }}</td>
+                        <td class="text-end">{{ item.product.final_total }}</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -155,6 +149,16 @@ export default {
             },
             orderId: '',
             isLoading: false,
+            salePrice: 0,
+            coupon_code: '',
+        }
+    },
+    computed: {
+        getOriginPrice() {
+            // 取得訂單折扣前價格
+            const productsArr = Object.values(this.order.products);
+            const orderPriceArr = productsArr.map(el => el.total);
+            return orderPriceArr.reduce((a, b) => a + b, 0);
         }
     },
     methods: {
@@ -176,12 +180,11 @@ export default {
                         this.getOrders();
                     }
                 })
-        }
+        },
     },
     created() {
         //網址上取得ID
         this.orderId = this.$route.params.orderId;
-        console.log(this.orderId);
         this.getOrders();
     },
 }
