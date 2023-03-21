@@ -1,7 +1,8 @@
 <template>
     <Loading :active="isLoading"></Loading>
-    <!-- 購物車列表 -->
     <div class="row | innerPage">
+        <Toast></Toast>
+        <!-- 購物車列表 -->
         <div class="col-md-8">
             <div class="cartTitle">
                 <router-link to>
@@ -14,8 +15,9 @@
                 </router-link>
                 購物車
             </div>
-            <div class="cartCard" v-if="cart.carts">
-                <div class="card" v-for="(item, id) in cart.carts" :key="id">
+            <!-- 購物車商品 -->
+            <div class="cartCard" v-if="cart.total > 0">
+                <div class="card" v-for="item in cart.carts" :key="item.product_id">
                     <div class="card-body | cartCardContent">
                         <div class="cardFirstBox">
                             <div class="cartImg"
@@ -33,15 +35,16 @@
                                 :disabled="item.id === cartLoadingItem">+</span>
                         </div>
                         <span style="line-height: 1.1em;">
-                            <small v-if="cart.final_total !== cart.total" class="text-success">折扣價</small>
-                            <br />
+                            <small v-if="cart.final_total !== cart.total" class="text-success" style="display: block;">折扣價</small>
                             NT$ {{ $filters.currency(item.final_total) }}
                         </span>
+                        <!-- 刪除產品 -->
                         <i class="bi bi-trash3-fill" :disabled="cartLoadingItem === item.product_id"
-                            @click="removeCartItem(item.product_id)"></i>
+                            @click="removeCartItem(item.id)"></i>
                     </div>
                 </div>
             </div>
+
             <div class="cartTotal">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="input-group">
@@ -111,11 +114,13 @@
 
                     <div class="mb-3">
                         <label for="message" class="form-label">留言</label>
-                        <textarea name="" id="message" class="form-control" cols="30" rows="10"
-                            v-model="form.message"></textarea>
+                        <textarea name="" id="message" class="form-control" cols="30" rows="10" v-model="form.message"
+                            ref="myTextarea"></textarea>
                     </div>
                     <div class="text-center">
-                        <button class="normalBtn">建立訂單</button>
+                        <button class="normalBtn">
+                            建立訂單
+                        </button>
                     </div>
                 </div>
             </Form>
@@ -128,6 +133,8 @@ import { mapState, mapActions } from 'pinia';
 import productStore from '@/stores/productStore';
 import statusStore from '@/stores/statusStore';
 import cartStore from '@/stores/cartStore';
+
+import Toast from '../components/ToastMessages.vue';
 
 export default {
     data() {
@@ -143,17 +150,19 @@ export default {
                 message: '',
             },
             coupon_code: '',
+            order_id: '',
         }
     },
+    components: {
+        Toast,
+    },
     computed: {
-        ...mapState(productStore, ['sortProduct']),
         ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
         ...mapState(cartStore, ['cart']),
     },
     methods: {
         ...mapActions(productStore, ['getProducts']),
         ...mapActions(cartStore, [
-            'addCart',
             'getCart',
             'removeCartItem',
             'updateCart'
@@ -178,7 +187,8 @@ export default {
             const order = this.form;
             this.$http.post(url, { data: order })
                 .then((res) => {
-                    console.log(res);
+                    this.order_id = res.data.orderId;
+                    this.$router.push(`/user/checkout/${this.order_id}`);
                 })
         },
         decrementQty(item) {

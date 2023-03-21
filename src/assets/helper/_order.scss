@@ -1,0 +1,49 @@
+.orderCard {
+    .card {
+        margin: 10px 0;
+        box-shadow: 0px 2px 5px #9d9d9d38;
+        border-radius: 7px;
+    }
+    .cartCardContent {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        span {
+            width: 33%;
+        }
+    }
+    .cartImg {
+        width: 40px;
+        height: 40px;
+    }
+    .cartProductQty {
+        width: 50%;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.orderUser {
+    width: 100%;
+    display: block;
+    padding: 30px 24px;
+    box-shadow: 0px 2px 5px #9d9d9d38;
+    border-radius: 7px;
+    thead {
+        display: block;
+        font-weight: 700;
+        color: #9747FF;
+        margin-bottom: 1rem;
+    }
+    tbody {
+        display: flex;
+        flex-wrap: wrap;
+        th {
+            width: 80px;
+            color: #828282;
+            font-weight: 400;
+        }
+    }
+}
+.userTitle {
+    width: 50%;
+}

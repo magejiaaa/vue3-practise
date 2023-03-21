@@ -1,6 +1,7 @@
 <template>
     <Loading :active="isLoading"></Loading>
     <div class="container | innerPage">
+        <Toast></Toast>
         <nav aria-label="breadcrumb" class="breadBox">
             <router-link to>
                 <button @click="goToAllProduct()">
@@ -69,6 +70,8 @@ import favoriteStore from '@/stores/favorite';
 import cartStore from '@/stores/cartStore';
 import statusStore from '@/stores/statusStore';
 
+import Toast from '../components/ToastMessages.vue';
+
 export default {
     data() {
         return {
@@ -78,6 +81,9 @@ export default {
             quantity: 1,
             pageName: '',
         }
+    },
+    components: {
+        Toast,
     },
     computed: {
         ...mapState(favoriteStore, ['favoriteItem']),
