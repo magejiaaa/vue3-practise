@@ -91,6 +91,10 @@
         background: #9747FF;
         border: 1px solid #9747FF;
         border-radius: 0px 5px 5px 0px;
+        &:hover {
+            background-color: #4B178E;
+            color: #fff;
+        }
     }
 }
 
@@ -113,7 +117,7 @@
     border-radius: 15px;
     margin-top: 36px;
     max-width: 375px;
-    height: 80vh;
+    max-height: 80vh;
     overflow: hidden;
     .scrollBarStyle {
         overflow: overlay;
@@ -140,7 +144,6 @@
         font-weight: 700;
         font-size: 1.25em;
         text-align: center;
-        color: #4B178E;
     }
 
     .form-control {
@@ -165,4 +168,60 @@
     position: fixed;
     right: 0;
     top: 80px;
+}
+
+
+// 結帳頁面
+.checkOutTotal {
+    .isCouponSale:disabled {
+        background: #9747FF;
+        color: #fff;
+    }
+}
+
+.payForm {
+    background-color: #0C5DE34D;
+    color: #0C5DE3;
+    .form-control {
+        border: 1px solid #0C5DE3;
+        color: #0C5DE3;
+        &:focus {
+            color: #0C5DE3;
+        }
+    }
+    .scrollBarStyle {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.dropdownSelect {
+    position: relative;
+    i {
+        position: absolute;
+        top: 32px;
+        right: 14px;
+    }
+}
+
+.bankNumber {
+    padding: 8px;
+    display: block;
+    border-radius: 5px;
+    border: 1px solid #0C5DE3;
+    background-color: rgba(255, 255, 255, 0.5);
+    th {
+        padding-right: 10px;
+    }
+}
+
+.cardDate {
+    input {
+        margin-right: 5px;
+    }
+}
+
+.alreadyPaid {
+    margin: 40px 0;
+    text-align: center;
 }

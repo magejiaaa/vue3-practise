@@ -42,11 +42,6 @@ const routes = [
         component: () => import('../views/AllProduct.vue'),
         props: true,
       },
-      // {
-      //   path: 'mountProduct',
-      //   name: 'mountProduct',
-      //   component: () => import('../views/AllProduct.vue'),
-      // },
       {
         path: 'cart',
         component: () => import('../views/UserCart.vue'),
@@ -68,16 +63,6 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const actions = mapActions(cartStore, ['getCart']);
-//   actions.getCart()
-//     .then(() => {
-//       next();
-//     })
-//     .catch(() => {
-//       next(false);
-//     });
-// });
 
 
 export default router
