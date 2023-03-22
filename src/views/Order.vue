@@ -6,8 +6,8 @@
         <thead>
             <tr>
                 <th width="120">購買時間</th>
-                <th>Email</th>
-                <th width="200">購買品項</th>
+                <th width="18%">Email</th>
+                <th>購買品項</th>
                 <th width="120">應付金額</th>
                 <th width="120">是否付款</th>
                 <th width="200">編輯</th>

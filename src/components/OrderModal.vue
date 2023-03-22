@@ -89,13 +89,13 @@
                                 <tbody>
                                     <tr v-for="item in tempOrder.products" :key="item.id">
                                         <th>
-                                            {{ item.name.title }}
+                                            {{ item.product.title }}
                                         </th>
                                         <td>
-                                            {{ item.name.price }}元/{{ item.qty }}{{ item.name.unit }}
+                                            {{ item.product.price }}元/{{ item.qty }}{{ item.product.unit }}
                                         </td>
                                         <td class="text-end">
-                                            {{ item.name.price * item.qty }}元
+                                            {{ item.product.price * item.qty }}元
                                         </td>
                                     </tr>
                                 </tbody>
