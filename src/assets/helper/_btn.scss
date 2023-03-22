@@ -56,6 +56,13 @@
     }
 }
 
+.blueBtn {
+    background: #0C5DE3;
+    &:hover {
+        background: #0047ba;
+    }
+}
+
 .bigBtn {
     width: 100%;
 }

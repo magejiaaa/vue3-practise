@@ -35,7 +35,8 @@
                                 :disabled="item.id === cartLoadingItem">+</span>
                         </div>
                         <span style="line-height: 1.1em;">
-                            <small v-if="cart.final_total !== cart.total" class="text-success" style="display: block;">折扣價</small>
+                            <small v-if="cart.final_total !== cart.total" class="text-success"
+                                style="display: block;">折扣價</small>
                             NT$ {{ $filters.currency(item.final_total) }}
                         </span>
                         <!-- 刪除產品 -->
@@ -44,12 +45,14 @@
                     </div>
                 </div>
             </div>
+            <p v-else class="text-center">尚未新增商品！</p>
 
-            <div class="cartTotal">
+            <div class="cartTotal" v-if="cart.total">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="input-group">
-                        <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
-                        <button class="btn" type="button" @click="addCouponCode">
+                        <input type="text" class="form-control" :disabled="alreadySale" v-model="localCoupon" placeholder="請輸入優惠碼">
+                        <button class="btn" type="button" @click="addCouponCode"
+                        :disabled="alreadySale">
                             套用
                         </button>
                     </div>
@@ -70,9 +73,10 @@
                             <span class="priceBox">{{ $filters.currency(cart.final_total - cart.total) }}</span>
                         </div>
                     </div>
-                    <p class="text-end m-0">折扣後價格
-                        <span>NT$ </span>
-                        <span class="bigPrice">{{ $filters.currency(cart.final_total) }}</span>
+                    <p class="text-end m-0 text-dark">折扣後價格
+                        <span style="color: #9747ff;">NT$ </span>
+                        <span class="bigPrice" style="color: #9747ff;">
+                            {{ $filters.currency(cart.final_total) }}</span>
                     </p>
                 </div>
             </div>
@@ -129,10 +133,11 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'pinia';
+import { mapState, mapActions, mapWritableState } from 'pinia';
 import productStore from '@/stores/productStore';
 import statusStore from '@/stores/statusStore';
 import cartStore from '@/stores/cartStore';
+import couponStore from '@/stores/couponStore';
 
 import Toast from '../components/ToastMessages.vue';
 
@@ -149,7 +154,6 @@ export default {
                 },
                 message: '',
             },
-            coupon_code: '',
             order_id: '',
         }
     },
@@ -159,6 +163,10 @@ export default {
     computed: {
         ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
         ...mapState(cartStore, ['cart']),
+        ...mapState(couponStore, ['alreadySale']),
+        ...mapWritableState(couponStore, {
+            localCoupon: 'coupon_code',
+        }),
     },
     methods: {
         ...mapActions(productStore, ['getProducts']),
@@ -167,20 +175,9 @@ export default {
             'removeCartItem',
             'updateCart'
         ]),
+        ...mapActions(couponStore, ['addCouponCode']),
         getProduct(id) {
             this.$router.push(`/user/product/${id}`);
-        },
-        addCouponCode() {
-            const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
-            const coupon = {
-                code: this.coupon_code,
-            }
-            this.isLoading = true;
-            this.$http.post(url, { data: coupon })
-                .then((res) => {
-                    console.log(res);
-                    this.getCart();
-                })
         },
         createOrder() {
             const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
