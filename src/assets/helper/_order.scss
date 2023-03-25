@@ -4,17 +4,21 @@
         box-shadow: 0px 2px 5px #9d9d9d38;
         border-radius: 7px;
     }
+
     .cartCardContent {
         padding-top: 5px;
         padding-bottom: 5px;
+
         span {
             width: 33%;
         }
     }
+
     .cartImg {
         width: 40px;
         height: 40px;
     }
+
     .cartProductQty {
         width: 50%;
         justify-content: space-between;
@@ -29,15 +33,18 @@
     margin: 24px 0;
     box-shadow: 0px 2px 5px #9d9d9d38;
     border-radius: 7px;
+
     thead {
         display: block;
         font-weight: 700;
         color: #9747FF;
         margin-bottom: 1rem;
     }
+
     tbody {
         display: flex;
         flex-wrap: wrap;
+
         th {
             width: 80px;
             color: #828282;
@@ -45,6 +52,63 @@
         }
     }
 }
+
 .userTitle {
     width: 50%;
+}
+
+
+@media screen and (max-width:820px) {
+    .responsive-table {
+        .table-header {
+            display: none;
+        }
+
+        .orderList {
+            padding: 0;
+            padding-top: 10px;
+            align-items: stretch;
+            .normalBtn {
+                border-radius: 15px;
+                padding: 10px;
+            }
+
+            .col {
+                padding: 8px 20px;
+            }
+
+            .form-check {
+                margin: 0;
+            }
+
+            .mobileListBtn1, .mobileListBtn2, .mobileListBtn3 {
+                background-color: #f8f9fa;
+            }
+            .mobileListBtn1 {
+                border-radius: 0 0 0 10px;
+            }
+            .mobileListBtn3 {
+                border-radius: 0 0 10px 0;
+            }
+
+            .form-switch .form-check-input {
+
+                margin-left: 0em;
+            }
+        }
+    }
+}
+
+@media screen and (max-width:425px) {
+    .orderModel {
+        .row {
+            width: 98%;
+            margin: 0 auto;
+        }
+    }
+    .orderUserBox {
+        table {
+            margin-bottom: 0;
+        }
+    }
 }

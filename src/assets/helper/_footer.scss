@@ -37,8 +37,11 @@
 }
 
 @media screen and (max-width:820px) {
-    .footer img {
-        display: none;
+    .footer {
+        margin-top: auto;
+        img {
+            display: none;
+        }
     }
     .mapLink {
         width: 50% !important;
@@ -51,7 +54,6 @@
     }
     .mapLink {
         width: 307px !important;
-        margin: 0 auto;
     }
     .company {
         margin: 20px auto;

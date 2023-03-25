@@ -1,48 +1,46 @@
 <template>
     <Loading :active="isLoading"></Loading>
-    <Toast></Toast>
-    <div class="text-end">
-        <button class="btn btn-primary" type="button" @click="openModal(true)">
-            新增產品
-        </button>
-    </div>
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th width="120">分類</th>
-                <th>產品名稱</th>
-                <th width="120">原價</th>
-                <th width="120">售價</th>
-                <th width="100">是否啟用</th>
-                <th width="200">編輯</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in products" :key="item.id">
-                <td>{{ item.category }}</td>
-                <td>{{ item.title }}</td>
-                <td class="text-right">
-                    {{ $filters.currency(item.origin_price) }}
-                </td>
-                <td class="text-right">
-                    {{ $filters.currency(item.price) }}
-                </td>
-                <td>
+    <div class="col-md-9 | dashboardPage">
+        <Toast></Toast>
+        <div class="stageTitle">
+            <h3 class="m-0">產品管理</h3>
+            <button class="normalBtn blueBtn" type="button" @click="openModal(true)">
+                新增產品
+            </button>
+        </div>
+        <ul class="responsive-table">
+            <li class="table-header">
+                <div class="col col-2">分類</div>
+                <div class="col col-4">產品名稱</div>
+                <div class="col text-center">原價</div>
+                <div class="col text-center">售價</div>
+                <div class="col col-1 text-center">是否啟用</div>
+                <div class="col col-1 text-center">編輯</div>
+                <div class="col col-1 text-center">刪除</div>
+            </li>
+            <li class="table-row" v-for="item in products" :key="item.id">
+                <div class="col-4 col-md-2">{{ item.category }}</div>
+                <div class="col-8 col-md-4 fw-bold">{{ item.title }}</div>
+                <div class="col-4 col-md-1 | productListPrice"><span>原價</span>{{ $filters.currency(item.origin_price) }}
+                </div>
+                <div class="col-8 col-md-1 | productListPrice"><span>售價</span>{{ $filters.currency(item.price) }}</div>
+                <div class="col-4 col-md-1 text-center">
                     <span class="text-success" v-if="item.is_enabled">啟用</span>
                     <span class="text-muted" v-else>未啟用</span>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm" @click="openModal(false, item)">編輯</button>
-                        <button class="btn btn-outline-danger btn-sm" @click="delModal(item)">刪除</button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <ProductModal ref="productModal" :product="tempProduct" @update-product="updatedProduct"></ProductModal>
-    <DelModal ref="delModal" :item="tempProduct" @del-product="delProduct"></DelModal>
-    <Pages :pages="pagination" @emit-pages="getProducts"></Pages>
+                </div>
+                <button class="col-4 col-md-1 text-center" style="color: #0C5DE3;" @click="openModal(false, item)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="col-4 col-md-1 text-center" style="color: red;" @click="delModal(item)">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </li>
+        </ul>
+
+        <ProductModal ref="productModal" :product="tempProduct" @update-product="updatedProduct"></ProductModal>
+        <DelModal ref="delModal" :item="tempProduct" @del-product="delProduct"></DelModal>
+        <Pages :pages="pagination" @emit-pages="getProducts"></Pages>
+    </div>
 </template>
 
 <script>
@@ -50,15 +48,11 @@ import ProductModal from '../components/ProductModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
-// import { storeToRefs } from 'pinia';
-import { mapState, mapActions } from 'pinia';
+
+import { mapState, mapActions, mapWritableState } from 'pinia';
 import statusStore from '@/stores/statusStore';
 import productStore from '@/stores/productStore';
 
-
-// 解構使用的話
-// const { products } = storeToRefs(productStore);
-// console.log(products);
 
 export default {
     data() {
@@ -73,9 +67,15 @@ export default {
         Toast,
         Pages,
     },
+    props: {
+        loginState: {
+            type: Boolean,
+        }
+    },
     computed: {
         ...mapState(productStore, ['products', 'pagination']),
         ...mapState(statusStore, ['isLoading']),
+        ...mapWritableState(statusStore, ['pageType']),
     },
     inject: ['emitter'],
     methods: {
@@ -134,7 +134,11 @@ export default {
         },
     },
     created() {
+        if (!this.loginState) {
+            this.$router.push('/login');
+        }
         this.getProducts();
+        this.pageType = 'product';
     },
 }
 </script>

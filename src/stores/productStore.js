@@ -38,6 +38,8 @@ export default defineStore('productStore', {
                         status.isLoading = false;
                         this.products = res.data.products;
                         this.pagination = res.data.pagination;
+                        document.body.scrollTop = 0; // For Safari
+                        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
                     }
                 })
                 .catch((error) => {

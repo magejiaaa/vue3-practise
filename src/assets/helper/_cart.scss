@@ -225,3 +225,59 @@
     margin: 40px 0;
     text-align: center;
 }
+
+@media screen and (max-width:820px) {
+    .userboardCss {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .orderForm {
+        .scrollBarStyle {
+            height: 60vh;
+        }
+    }
+}
+
+@media screen and (max-width:425px) {
+    .cartTotal {
+        margin-bottom: 0px;
+        padding: 1rem;
+        .d-flex {
+            flex-wrap: wrap;
+        }
+        .input-group {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+    }
+    .orderForm {
+        margin: 40px 0;
+        max-height: none;
+        max-width: 100%;
+        .scrollBarStyle {
+            height: auto;
+            padding: 30px 15px;
+        }
+    }
+    .orderUser {
+        .userTitle {
+            width: 100%;
+        }
+    }
+    .cartCardContent {
+        flex-wrap: wrap;
+        span {
+            width: auto !important;
+        }
+    }
+    .cardFirstBox {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .cartProductQty {
+        .input-number-increment {
+            margin-right: 0;
+        }
+    }
+}

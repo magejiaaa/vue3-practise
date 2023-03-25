@@ -45,7 +45,7 @@
 }
 
 .normalBtn {
-    background: #9747FF;
+    background: #9747FF !important;
     border-radius: 26px;
     padding: 16px 40px;
     border: none;
@@ -57,9 +57,9 @@
 }
 
 .blueBtn {
-    background: #0C5DE3;
+    background: #0C5DE3 !important;
     &:hover {
-        background: #0047ba;
+        background: #0047ba !important;
     }
 }
 

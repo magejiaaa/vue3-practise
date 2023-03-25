@@ -1,44 +1,44 @@
 <template>
     <Loading :active="isLoading"></Loading>
-    <Toast></Toast>
-    <div class="text-end">
-        <button class="btn btn-primary" type="button" @click="openModal(true)">
-            建立新的優惠券
-        </button>
-    </div>
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th width="120">名稱</th>
-                <th>折扣百分比</th>
-                <th width="120">到期日</th>
-                <th width="100">是否啟用</th>
-                <th width="200">編輯</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, key) in coupons" :key="key">
-                <td>{{ item.title }}</td>
-                <td>{{ item.percent }}%</td>
-                <td class="text-right">
-                    {{ $filters.date(item.due_date) }}
-                </td>
-                <td>
+    <div class="col-md-9 | dashboardPage">
+        <Toast></Toast>
+        <div class="stageTitle">
+            <h3 class="m-0">優惠券管理</h3>
+            <button class="normalBtn blueBtn" type="button" @click="openModal(true)">
+                新增優惠券
+            </button>
+        </div>
+        <ul class="responsive-table">
+            <li class="table-header text-center">
+                <div class="col col-3">名稱</div>
+                <div class="col col-2">折扣百分比</div>
+                <div class="col">到期日</div>
+                <div class="col col-2">是否啟用</div>
+                <div class="col col-1">編輯</div>
+                <div class="col col-1">刪除</div>
+            </li>
+            <li class="table-row" v-for="(item, key) in coupons" :key="key">
+                <div class="col col-3">{{ item.title }}</div>
+                <div class="col col-2 fw-bold text-center">{{ item.percent }}%</div>
+                <div class="col text-center">{{ $filters.date(item.due_date) }}</div>
+
+                <div class="col col-2 text-center">
                     <span class="text-success" v-if="item.is_enabled">啟用</span>
                     <span class="text-muted" v-else>未啟用</span>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm" @click="openModal(false, item)">編輯</button>
-                        <button class="btn btn-outline-danger btn-sm" @click="delModal(item)">刪除</button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <CouponModal ref="couponModal" :coupon="tempCoupon" @update-coupon="updatedCoupon"></CouponModal>
-    <DelModal ref="delModal" :item="tempCoupon" @del-coupon="delCoupons"></DelModal>
-    <Pages :pages="pagination" @emit-pages="getCoupons"></Pages>
+                </div>
+                <button class="col col-1 text-center" style="color: #0C5DE3;" @click="openModal(false, item)">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="col col-1 text-center" style="color: red;" @click="delModal(item)">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </li>
+        </ul>
+
+        <CouponModal ref="couponModal" :coupon="tempCoupon" @update-coupon="updatedCoupon"></CouponModal>
+        <DelModal ref="delModal" :item="tempCoupon" @del-coupon="delCoupons"></DelModal>
+        <Pages :pages="pagination" @emit-pages="getCoupons"></Pages>
+    </div>
 </template>
 
 <script>
@@ -46,6 +46,9 @@ import CouponModal from '../components/CouponModal.vue';
 import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
+
+import { mapActions, mapWritableState } from 'pinia';
+import statusStore from '@/stores/statusStore';
 
 
 export default {
@@ -69,8 +72,17 @@ export default {
         Toast,
         Pages,
     },
+    props: {
+        loginState: {
+            type: Boolean,
+        }
+    },
     inject: ['emitter'],
+    computed: {
+        ...mapWritableState(statusStore, ['pageType']),
+    },
     methods: {
+        ...mapActions(statusStore, ['pushMessage']),
         getCoupons(page = 1) {
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons?page=${page}`;
             this.isLoading = true;
@@ -120,7 +132,8 @@ export default {
                     couponComponent.hideModal();
                     this.getCoupons();
                     // 傳送API訊息至吐司元件
-                    this.$httpMessageState(response, '更新優惠券資料');
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 });
         },
         delCoupons() {
@@ -134,12 +147,17 @@ export default {
                     console.log(response.data);
                     delComponent.hideModal();
                     this.getCoupons();
-                    this.$httpMessageState(response, '刪除優惠券資料');
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 })
         },
     },
     created() {
+        if (!this.loginState) {
+            this.$router.push('/login');
+        }
         this.getCoupons();
+        this.pageType = 'coupon';
     },
 }
 </script>

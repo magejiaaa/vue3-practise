@@ -1,5 +1,5 @@
 <template>
-  <UserMenu :cart="cartStore.cart" ref="Menu"></UserMenu>
+  <UserMenu :cart="cartStore.cart" ref="Menu" @menu-type="localType"></UserMenu>
   <div class="container-fluid">
     <div class="row">
       <div class="banner"></div>
@@ -108,6 +108,7 @@ import emitter from '@/methods/emitter';
 
 // 取得購物車列表傳給navbar
 import useCartStore from '@/stores/cartStore';
+import useStatusStore from '@/stores/statusStore';
 
 import FooterBox from '../components/footer.vue';
 import { gsap } from 'gsap';
@@ -137,7 +138,9 @@ export default {
     // 販售種類
     const ItemBox = ref(null)
     const mediaQuery = "(max-width: 820px)";
+    const largeScr = "(min-width: 820px)"
     const isSmallScreen = gsap.matchMedia(mediaQuery).matches;
+    const isLargeScreen = window.matchMedia(largeScr).matches;
     const bannerText = ref(null)
     // 網站特色
     const Feature = ref(null)
@@ -223,22 +226,29 @@ export default {
 
     });
 
+    const statusStore = useStatusStore();
+    const localType = (type) => {
+      statusStore.changePageType(type);
+    }
+
     // 子組件選單動畫
     const Menu = ref(null)
     onMounted(async () => {
       await nextTick()
-      gsap.from(Menu.value.$el,
-        {
-          backgroundColor: '#000f2800',
-          duration: 1,
-          scrollTrigger: {
-          trigger: '.banner',
-          start: "80% 50%",
-          end: "bottom 30%",
-          scrub: true,
-          markers: false,
-        }
-        })
+      if (isLargeScreen) {
+        gsap.from(Menu.value.$el,
+          {
+            backgroundColor: '#000f2800',
+            duration: 1,
+            scrollTrigger: {
+              trigger: '.banner',
+              start: "80% 50%",
+              end: "bottom 30%",
+              scrub: true,
+              markers: false,
+            }
+          })
+      }
     });
 
     // pinia CART
@@ -263,6 +273,8 @@ export default {
       FeatureList1,
       FeatureList2,
       cartStore,
+      // 寫入pageType
+      localType,
     }
   },
 }

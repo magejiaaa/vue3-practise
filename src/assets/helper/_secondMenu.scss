@@ -1,0 +1,112 @@
+.secondMenu {
+    border-right: 1px solid #C7C7C7;
+    position: fixed;
+    height: 100%;
+    padding: 80px 0 0 0 !important;
+    background-color: #F9F8F8;
+    ul {
+        list-style: none;
+        width: 100%;
+        margin: 40px auto;
+    }
+    a {
+        display: block;
+        padding: 19px 33%;
+        text-decoration: none;
+        position: relative;
+        font-weight: 700;
+        color: #828282;
+        transition: all 0.3s ease;
+        &:hover, .pageActive {
+            color: #9747FF;
+            border-left: 10px solid #9747FF;
+            i {
+                color: #9747FF;
+            }
+        }
+    }
+    i {
+        transition: all 0.3s ease;
+        position: absolute;
+        top: 13px;
+        left: 15%;
+        font-size: 1.5em;
+        color: #9747FF80;
+    }
+    .pageActive {
+        color: #9747FF;
+        border-left: 10px solid #9747FF;
+        i {
+            color: #9747FF;
+        }
+    }
+    .mobileTabs {
+        display: none;
+    }
+}
+
+.blueMenu {
+    .pageActive {
+        color: #0C5DE3;
+        border-left: 10px solid #0C5DE3;
+        i {
+            color: #0C5DE3;
+        }
+    }
+    a {
+        &:hover {
+            color: #0C5DE3;
+            border-left: 10px solid #0C5DE3;
+            i {
+                color: #0C5DE3;
+            }
+        }
+    }
+    i {
+        color: #0C5DE380;
+    }
+}
+
+.secondTitle {
+    padding: 17px 33%;
+    font-weight: 300;
+    color: #828282;
+}
+
+
+
+@media screen and (max-width:820px) {
+    .secondMenu {
+        a {
+            padding: 19px 5% 19px 34%;
+        }
+    }
+}
+
+@media screen and (max-width:425px) {
+    .secondMenu {
+        position: unset;
+        ul {
+            display: none;
+        }
+        .mobileTabs {
+            display: flex;
+            padding: 0 15px;
+            margin: 20px 0 0 0;
+            .nav-link {
+                background-color: #e9ecef;
+            }
+            .nav-link.active {
+                background-color: #f9f8f8;
+                color: #0C5DE3;
+            }
+            a {
+                padding: 10px 15px;
+                position: unset;
+                &:hover {
+                    border-left: 1px;
+                }
+            }
+        }
+    }
+}

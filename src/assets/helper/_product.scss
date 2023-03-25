@@ -205,8 +205,16 @@ $icon-size: 24px;
     }
 }
 
+@media screen and (max-width:820px) {
+    .innerPage {
+        min-height: unset;
+    }
+}
 
 @media screen and (max-width:767px) {
+    .innerPage {
+        margin-bottom: 50px;
+    }
     .classFilter {
         padding: 0px;
         background-color: #fff;

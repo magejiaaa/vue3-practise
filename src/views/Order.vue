@@ -1,51 +1,60 @@
 <template>
     <Loading :active="isLoading"></Loading>
-    <Toast></Toast>
-    <!-- 正文內容 -->
-    <table class="table mt-4" v-if="AllProducts">
-        <thead>
-            <tr>
-                <th width="120">購買時間</th>
-                <th width="18%">Email</th>
-                <th>購買品項</th>
-                <th width="120">應付金額</th>
-                <th width="120">是否付款</th>
-                <th width="200">編輯</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="item in orders" :key="item.id">
-                <td>{{ $filters.date(item.create_at) }}</td>
-                <td>{{ item.user.email }}</td>
-                <td class="text-right">
+    <div class="col-md-9 | dashboardPage" v-if="AllProducts">
+        <Toast></Toast>
+        <div class="stageTitle">
+            <h3 class="m-0">訂單管理</h3>
+        </div>
+        <ul class="responsive-table">
+            <li class="table-header text-center">
+                <div class="col col-2">建立日期</div>
+                <div class="col col-3">e-mail</div>
+                <div class="col col-3">訂單內容</div>
+                <div class="col col-1">總價</div>
+                <div class="col col-2">是否付款</div>
+                <div class="col" v-if="pageType === 'order'">編輯</div>
+                <div class="col" v-if="pageType === 'order'">刪除</div>
+            </li>
+            <li class="table-row | orderList" v-for="item in orders" :key="item.id">
+                <div class="col col-4 col-lg-2 text-lg-center">{{ $filters.date(item.create_at) }}</div>
+                <div class="col col-8 col-lg-3 fw-bold" style="word-wrap: break-word;">{{ item.user.email }}</div>
+                <div class="col col-8 col-lg-3">
                     <p class="mb-0" v-for="orderPro in item.products" :key="orderPro.id">
                         {{ orderPro.product?.title }} / {{ orderPro.qty }}{{ orderPro.product?.unit }}
                     </p>
-                </td>
-                <td class="text-right">
-                    {{ $filters.currency(item.total) }}
-                </td>
-                <td>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" :checked="item.is_paid" id="is_paid">
-                        <label class="form-check-label" for="is_paid" v-if="item.is_paid">已付款
-                        </label>
-                        <label class="form-check-label" for="is_paid" v-else>未付款
-                        </label>
-                    </div>
-                </td>
-                <td>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm" @click="openModal(item)">編輯</button>
-                        <button class="btn btn-outline-danger btn-sm" @click="delModal(item)">刪除</button>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <OrderModal ref="OrderModal" :order-outside="tempOrder" @update-order="updatedOrder"></OrderModal>
-    <DelModal ref="delModal" :item="tempOrder" @del-product="delProduct"></DelModal>
-    <Pages :pages="pagination" @emit-pages="getOrders"></Pages>
+                </div>
+                <div class="col col-4 col-lg-1 text-center">NT$ {{ $filters.currency(item.total) }}</div>
+                <!-- 不須登入 -->
+                <div class="col col-lg-2 text-center" v-if="pageType === 'userOrder'">
+                    <span v-if="item.is_paid">已付款</span>
+                    <button class="normalBtn" @click.prevent="goToPay(item.id)" v-else>前往付款</button>
+                </div>
+                <!-- 有登入 -->
+                <div class="col col-lg-2 form-check form-switch | mobileListBtn1" v-else>
+                    <input class="form-check-input" type="checkbox" id="is_paid" v-model="item.is_paid"
+                        @click="changePaid(item)">
+                    <label class="form-check-label" for="is_paid" v-if="item.is_paid">已付款
+                    </label>
+                    <label class="form-check-label" for="is_paid" v-else>未付款
+                    </label>
+                </div>
+                <!-- 編輯 -->
+                <button class="col text-center | mobileListBtn2" style="color: #0C5DE3;" @click="openModal(item)"
+                    v-if="pageType === 'order'">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <!-- 刪除 -->
+                <button class="col text-center | mobileListBtn3" style="color: red;" @click="delModal(item)"
+                    v-if="pageType === 'order'">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </li>
+        </ul>
+
+        <OrderModal ref="OrderModal" :order-outside="tempOrder" @update-order="updatedOrder"></OrderModal>
+        <DelModal ref="delModal" :item="tempOrder" @del-product="delProduct"></DelModal>
+        <Pages :pages="pagination" @emit-pages="getOrders"></Pages>
+    </div>
 </template>
 
 <script>
@@ -54,7 +63,8 @@ import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
 
-import { mapState, mapActions } from 'pinia';
+import { mapState, mapActions, mapWritableState } from 'pinia';
+import statusStore from '@/stores/statusStore';
 import productStore from '@/stores/productStore';
 
 
@@ -75,12 +85,19 @@ export default {
         Toast,
         Pages,
     },
+    props: {
+        loginState: {
+            type: Boolean,
+        }
+    },
     inject: ['emitter'],
     computed: {
         ...mapState(productStore, ['AllProducts']),
+        ...mapWritableState(statusStore, ['pageType']),
     },
     methods: {
         ...mapActions(productStore, ['getAllProducts']),
+        ...mapActions(statusStore, ['pushMessage']),
         getOrders(pages = 1) {
             this.pages = pages;
             const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${pages}`;
@@ -125,7 +142,24 @@ export default {
                     // console.log(response);
                     orderComponent.hideModal();
                     // 傳送API訊息至吐司元件
-                    this.$httpMessageState(response, '更新付款狀態');
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
+                });
+        },
+        // 編輯訂單付款狀態
+        changePaid(item) {
+            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${item.id}`;
+            this.isLoading = true;
+            const paid = {
+                is_paid: !item.is_paid,
+            };
+            this.$http.put(api, { data: paid })
+                .then((response) => {
+                    this.isLoading = false;
+                    this.getOrders(this.pages);
+                    // 傳送API訊息至吐司元件
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 });
         },
         delProduct() {
@@ -139,11 +173,21 @@ export default {
                     console.log(response.data);
                     delComponent.hideModal();
                     this.getOrders();
-                    this.$httpMessageState(response, '刪除');
+                    const data = { title: response.data.message };
+                    this.pushMessage(data);
                 })
         },
+        // 前往付款
+        goToPay(orderID) {
+            this.$router.push(`/user/checkout/${orderID}`);
+        }
     },
     created() {
+        if (this.pageType === 'order') {
+            if (!this.loginState) {
+                this.$router.push('/login');
+            }
+        }
         this.getOrders();
     },
 }

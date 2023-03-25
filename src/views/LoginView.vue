@@ -69,7 +69,12 @@ export default {
                         // console.log( token, expired );
                         document.cookie = `hexToken=${token}; expirex=${new Date(expired)}`;
                         // console.log(res);
-                        this.$router.back(1);
+                        this.$router.push({
+                            path: '/dashboard/products',
+                            query: {
+                                loginState: true
+                            }
+                        });
                     }
                 });
         },

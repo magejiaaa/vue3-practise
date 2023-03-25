@@ -48,7 +48,7 @@
             <p v-else class="text-center">尚未新增商品！</p>
 
             <div class="cartTotal" v-if="cart.total">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-end justify-content-md-between align-items-center">
                     <div class="input-group">
                         <input type="text" class="form-control" :disabled="alreadySale" v-model="localCoupon" placeholder="請輸入優惠碼">
                         <button class="btn" type="button" @click="addCouponCode"

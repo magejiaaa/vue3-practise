@@ -1,9 +1,12 @@
 <template>
-    <UserMenu :cart="cart" :cartLoadingItem="cartLoadingItem" @navCart="handleNavCart"></UserMenu>
-    <div class="container-fluid">
-        <router-view></router-view>
+    <UserMenu :needLoginPage="loginPage" :cart="cart" :cartLoadingItem="cartLoadingItem" @navCart="handleNavCart"
+        @menuType="changePage"></UserMenu>
+    <div class="userboardCss">
+        <div class="container-fluid">
+            <router-view></router-view>
+        </div>
+        <FooterBox></FooterBox>
     </div>
-    <FooterBox></FooterBox>
 </template>
 
 <script>
@@ -20,7 +23,7 @@ export default {
     },
     data() {
         return {
-            // cart: {},
+            loginPage: false,
         };
     },
     provide() {
@@ -29,13 +32,17 @@ export default {
         };
     },
     computed: {
-        ...mapState(statusStore, ['isLoading', 'cartLoadingItem']),
+        ...mapState(statusStore, ['isLoading', 'cartLoadingItem', 'pageType']),
         ...mapState(cartStore, ['cart']),
     },
     methods: {
+        ...mapActions(statusStore, ['changePageType']),
         ...mapActions(cartStore, ['getCart', 'removeCartItem']),
         handleNavCart(id) {
             this.removeCartItem(id);
+        },
+        changePage(type) {
+            this.changePageType(type);
         }
     },
     created() {

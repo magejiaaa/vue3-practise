@@ -1,7 +1,4 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-// import { mapActions } from 'pinia';
-// import cartStore from '@/stores/cartStore';
-
 
 const routes = [
   {
@@ -29,6 +26,10 @@ const routes = [
       {
         path: 'coupon',
         component: () => import('../views/Coupon.vue'),
+      },
+      {
+        path: 'favorite',
+        component: () => import('../views/FavoriteList.vue'),
       },
     ],
   },

@@ -6,6 +6,7 @@ export default defineStore('statusStore', {
         // 加到購物車的Loading
         cartLoadingItem: '',
         messages: [],
+        pageType: '',
     }),
     actions: {
         pushMessage(data) {
@@ -15,6 +16,9 @@ export default defineStore('statusStore', {
         },
         cleanMessage() {
             this.messages = [];
+        },
+        changePageType(type) {
+            this.pageType = type;
         }
     },
 })

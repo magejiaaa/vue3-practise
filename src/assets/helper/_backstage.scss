@@ -1,8 +1,186 @@
+.dashInnerPage {
+    background-color: #F9F8F8; 
+    min-height: 100vh;
+}
+
+.dashboardPage {
+    margin-left: 25%; 
+    padding: 80px 40px;
+}
+
+.stageTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px 0 26px 0;
+
+    h3 {
+        font-weight: 700;
+        font-size: 2em;
+        color: #000F28;
+    }
+}
+
+.responsive-table {
+    padding-left: 0;
+    margin-bottom: 40px;
+
+    li {
+        list-style: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        background: #FFFFFF;
+        border: 1px solid #C7C7C7;
+    }
+
+    .table-header {
+        color: #828282;
+        text-transform: uppercase;
+    }
+
+    .table-row {
+        background-color: #ffffff;
+        padding: 14px 20px;
+
+        i {
+            font-size: 1.3em;
+        }
+
+        button {
+            border: none;
+            background-color: #FFFFFF;
+            text-align: center;
+        }
+    }
+}
+
 .selectInput {
     position: relative;
+
     i {
         position: absolute;
         top: 40px;
         right: 17px;
+    }
+}
+
+
+// model視窗
+.productModel {
+    padding: 0 4%;
+    color: #0042AF;
+    h3 {
+        font-weight: 700;
+        font-size: 2em;
+        color: #000F28;
+    }
+    .modelClose {
+        padding-top: 20px;
+        margin-top: 20px;
+        width: 1.5em;
+        height: 1.5em;
+        background-size: 1.5em;
+    }
+    label {
+        color: #0C5DE3;
+    }
+    .form-control {
+        border: 1px solid #0C5DE3;
+        &::file-selector-button {
+            color: #fff;
+            background-color: #0C5DE3;
+        }
+        &:hover:not(:disabled):not([readonly])::file-selector-button {
+            background-color: #0042AF;
+        }
+    }
+    .blue-outline {
+        border: 1px solid #0C5DE3;
+        color: #0C5DE3;
+        &:hover {
+            background-color: #0042AF;
+            color: #FFFFFF;
+            border: 1px solid #0042AF;
+        }
+    }
+    .form-check {
+        padding-left: 2.5em;
+        .form-check-input {
+            width: 1.5em;
+            height: 1.5em;
+            margin-top: 0;
+            margin-left: -2.5em;
+        }
+    }
+}
+
+.productListPrice {
+    text-align: center;
+    span {
+        display: none;
+    }
+}
+
+.tempPic {
+    height: 50px;
+    width: 50px;
+    background-size: cover;
+    background-position: center;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+
+//訂單視窗
+.orderUserBox {
+    padding: 40px 3.5% !important;
+    background-color: #0C5DE3;
+    color: #fff;
+    border-radius: 15px;
+    h3 {
+        color: #fff;
+    }
+    table {
+        color: #fff;
+    }
+    tbody, tr, td, th {
+        border: none;
+    }
+}
+
+// 訂單列表
+.orderList {
+    .form-check {
+        text-align: center;
+        .form-check-input {
+            float: none;
+            margin-right: 3px;
+        }
+    }
+}
+
+
+@media screen and (max-width:425px) {
+    .dashInnerPage {
+        flex-direction: column;
+    }
+    .dashboardPage {
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+    .responsive-table {
+        .table-row {
+            flex-wrap: wrap;
+        }
+    }
+    .productListPrice {
+        text-align: left;
+        span {
+            display: inline;
+        }
     }
 }

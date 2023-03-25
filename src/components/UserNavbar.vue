@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark p-0 fixed-top | topMenu">
+    <nav class="navbar navbar-expand-lg navbar-dark p-0 fixed-top | topMenu" :class="{ 'lightMenu': needLoginPage }">
         <header class="container-fluid p-0">
             <h1 class="m-0 ms-1 ms-md-4 | logo">
                 <router-link to="/" class="navbar-brand mb-0 h1 p-0" aria-current="page">亞馬烏羅提菜市場</router-link>
@@ -14,35 +14,34 @@
 
             <transition name="menu">
                 <div class="navbar-collapse justify-content-end me-lg-4 | showMenu" v-show="mobileMenuShow">
-                    <ul class="navbar-nav | menu">
-                        <li class="nav-item" @click="mobileMenuShow = !mobileMenuShow">
+                    <ul class="navbar-nav | menu" @click="mobileMenuShow = !mobileMenuShow">
+                        <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '寵物' }
-                            }" class=" active" aria-current="page" >寵物販售</router-link>
+                            }" class=" active" aria-current="page">寵物販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '坐騎' }
-                            }" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">坐騎販售</router-link>
+                            }" class=" active" aria-current="page">坐騎販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '代打代練' }
-                            }" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">代打帶練</router-link>
+                            }" class=" active" aria-current="page">代打帶練</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: 'Gil' }
-                            }" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">購買Gil</router-link>
+                            }" class=" active" aria-current="page">購買Gil</router-link>
                         </li>
-                        <li class="nav-item" style="position: relative;" @mouseenter="isCartOpen = true;
-                        isUserOpen = false;">
+                        <li class="nav-item" style="position: relative;" @mouseenter="cartPreviewOpen">
                             <span class="cartsLength" v-if="cart.carts">{{ cart.carts.length }}</span>
-                            <router-link to="/user/cart" class=" active" aria-current="page" @click="mobileMenuShow = !mobileMenuShow">
+                            <router-link to="/user/cart" class=" active" aria-current="page">
                                 <i class="bi bi-cart3"></i>
                                 購物車
                             </router-link>
@@ -50,7 +49,7 @@
                                 <transition name="cartMenu">
                                     <ul class="cartPreview" v-if="cart.carts" @mouseleave="isCartOpen = false"
                                         v-show="isCartOpen">
-                                        <li v-for="(item, id) in cart.carts" :key="id"  @click="mobileMenuShow = !mobileMenuShow">
+                                        <li v-for="(item, id) in cart.carts" :key="id">
                                             <!-- 購物車刪除 -->
                                             <i class="bi bi-x-circle-fill" @click="emitCart(item.id)"
                                                 :disabled="cartLoadingItem === item.id"></i>
@@ -76,16 +75,16 @@
                                 <i class="bi bi-person-circle"></i>
                                 使用者選單
                             </a>
-                            <div class="userMenu_login" v-if="!isLogin">
-                                <p>HI,目前尚未登入</p>
-                                <router-link to="/login" class=" active" aria-current="page">請登入</router-link>
-                            </div>
-                            <div class="userMenu_loggedIn" v-else>
-                                <p>HI,會飛的和牛</p>
-                                <router-link to="/" class=" active" aria-current="page">我的收藏</router-link>
-                                <router-link to="/" class=" active" aria-current="page">查看訂單</router-link>
-                                <router-link to="/" class=" active" aria-current="page">賣家專區</router-link>
-                                <a href="#" @click.prevent="logout()">登出</a>
+                            <div class="userMenu_loggedIn">
+                                <p v-if="!isLogin">HI,目前尚未登入</p>
+                                <p v-else>HI,會飛的和牛</p>
+                                <router-link to="/dashboard/favorite" class=" active" aria-current="page"
+                                    @click="emitPage('favorite')">我的收藏</router-link>
+                                <router-link to="/dashboard/order" class=" active" aria-current="page"
+                                    @click="emitPage('userOrder')">查看訂單</router-link>
+                                <router-link v-if="isLogin" to="/dashboard/products" class=" active" aria-current="page"
+                                    @click="emitPage('product')">賣家專區</router-link>
+                                <a v-else href="#" @click.prevent="logout()">登出</a>
                             </div>
                         </li>
                     </ul>
@@ -97,16 +96,18 @@
                         </a>
                         <div class="m-5 | userBtnDown" @mouseleave="isUserOpen = false">
                             <transition name="userBtnMenu">
-                                <div class="userMenu_login" v-show="isUserOpen" v-if="!isLogin">
-                                    <p>HI,目前尚未登入</p>
-                                    <router-link to="/login" class=" active" aria-current="page">請登入</router-link>
-                                </div>
-                                <div class="userMenu_loggedIn" v-show="isUserOpen" v-else>
-                                    <p>HI,會飛的和牛</p>
-                                    <router-link to="/" class=" active" aria-current="page">我的收藏</router-link>
-                                    <router-link to="/" class=" active" aria-current="page">查看訂單</router-link>
-                                    <router-link to="/" class=" active" aria-current="page">賣家專區</router-link>
-                                    <a href="#" @click.prevent="logout()">登出</a>
+                                <div class="userMenu_loggedIn" v-show="isUserOpen">
+                                    <p v-if="!isLogin">HI,目前尚未登入</p>
+                                    <p v-else>HI,會飛的和牛</p>
+                                    <router-link to="/dashboard/favorite" class=" active" aria-current="page"
+                                        @click="emitPage('favorite')">我的收藏</router-link>
+                                    <router-link to="/dashboard/order" class=" active" aria-current="page"
+                                        @click="emitPage('userOrder')">查看訂單</router-link>
+                                    <router-link v-if="isLogin" to="/dashboard/products" class=" active" aria-current="page"
+                                        @click="emitPage('product')">賣家專區</router-link>
+                                    <router-link v-if="!isLogin" to="/login" class=" active"
+                                        aria-current="page">請登入</router-link>
+                                    <a v-else href="#" @click.prevent="logout()">登出</a>
                                 </div>
                             </transition>
                         </div>
@@ -128,7 +129,11 @@ export default {
         cartLoadingItem: {
             type: String,
             default: ''
-        }
+        },
+        needLoginPage: {
+            type: Boolean,
+            default: false
+        },
     },
     data() {
         return {
@@ -140,6 +145,7 @@ export default {
             isCartOpen: false,
             mobileMenuShow: false,
             isLogin: false,
+            pageType: '',
         }
     },
     methods: {
@@ -167,6 +173,17 @@ export default {
         emitCart(id) {
             this.$emit('navCart', id);
         },
+        // 購物車有物品才展開
+        cartPreviewOpen() {
+            this.isUserOpen = false;
+            if (this.cart.carts.length > 0) {
+                this.isCartOpen = true;
+            }
+        },
+        emitPage(type) {
+            this.$emit('menuType', type);
+            this.pageType = type;
+        }
     },
     created() {
         // 獲取hexToken中的cookie的值
@@ -180,6 +197,7 @@ export default {
             .then((res) => {
                 if (res.data.success) {
                     this.isLogin = true;
+                    this.$emit('loginState', this.isLogin);
                 }
             });
     },
