@@ -19,29 +19,29 @@
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '寵物' }
-                            }" class=" active" aria-current="page">寵物販售</router-link>
+                            }" :class="{ 'active': pageName === '寵物' }">寵物販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '坐騎' }
-                            }" class=" active" aria-current="page">坐騎販售</router-link>
+                            }" :class="{ 'active': pageName === '坐騎' }">坐騎販售</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: '代打代練' }
-                            }" class=" active" aria-current="page">代打帶練</router-link>
+                            }" :class="{ 'active': pageName === '代打代練' }">代打帶練</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link :to="{
                                 name: 'AllProduct',
                                 params: { pageName: 'Gil' }
-                            }" class=" active" aria-current="page">購買Gil</router-link>
+                            }" :class="{ 'active': pageName === 'Gil' }">購買Gil</router-link>
                         </li>
                         <li class="nav-item" style="position: relative;" @mouseenter="cartPreviewOpen">
                             <span class="cartsLength" v-if="cart.carts">{{ cart.carts.length }}</span>
-                            <router-link to="/user/cart" class=" active" aria-current="page">
+                            <router-link to="/user/cart">
                                 <i class="bi bi-cart3"></i>
                                 購物車
                             </router-link>
@@ -78,11 +78,9 @@
                             <div class="userMenu_loggedIn">
                                 <p v-if="!isLogin">HI,目前尚未登入</p>
                                 <p v-else>HI,會飛的和牛</p>
-                                <router-link to="/dashboard/favorite" class=" active" aria-current="page"
-                                    @click="emitPage('favorite')">我的收藏</router-link>
-                                <router-link to="/dashboard/order" class=" active" aria-current="page"
-                                    @click="emitPage('userOrder')">查看訂單</router-link>
-                                <router-link v-if="isLogin" to="/dashboard/products" class=" active" aria-current="page"
+                                <router-link to="/dashboard/favorite" @click="emitPage('favorite')">我的收藏</router-link>
+                                <router-link to="/dashboard/order" @click="emitPage('userOrder')">查看訂單</router-link>
+                                <router-link v-if="isLogin" to="/dashboard/products"
                                     @click="emitPage('product')">賣家專區</router-link>
                                 <a v-else href="#" @click.prevent="logout()">登出</a>
                             </div>
@@ -99,14 +97,11 @@
                                 <div class="userMenu_loggedIn" v-show="isUserOpen">
                                     <p v-if="!isLogin">HI,目前尚未登入</p>
                                     <p v-else>HI,會飛的和牛</p>
-                                    <router-link to="/dashboard/favorite" class=" active" aria-current="page"
-                                        @click="emitPage('favorite')">我的收藏</router-link>
-                                    <router-link to="/dashboard/order" class=" active" aria-current="page"
-                                        @click="emitPage('userOrder')">查看訂單</router-link>
-                                    <router-link v-if="isLogin" to="/dashboard/products" class=" active" aria-current="page"
+                                    <router-link to="/dashboard/favorite" @click="emitPage('favorite')">我的收藏</router-link>
+                                    <router-link to="/dashboard/order" @click="emitPage('userOrder')">查看訂單</router-link>
+                                    <router-link v-if="isLogin" to="/dashboard/products"
                                         @click="emitPage('product')">賣家專區</router-link>
-                                    <router-link v-if="!isLogin" to="/login" class=" active"
-                                        aria-current="page">請登入</router-link>
+                                    <router-link v-if="!isLogin" to="/login">請登入</router-link>
                                     <a v-else href="#" @click.prevent="logout()">登出</a>
                                 </div>
                             </transition>
@@ -146,6 +141,12 @@ export default {
             mobileMenuShow: false,
             isLogin: false,
             pageType: '',
+            pageName: '',
+        }
+    },
+    watch: {
+        "$route"(to) {
+            this.pageName = to.params.pageName;
         }
     },
     methods: {
@@ -183,6 +184,9 @@ export default {
         emitPage(type) {
             this.$emit('menuType', type);
             this.pageType = type;
+        },
+        handleRouteChange() {
+            this.pageName = this.$route.params.pageName;
         }
     },
     created() {

@@ -34,6 +34,7 @@
                 </div>
             </div>
             <div class="row row-cols-2 row-cols-lg-5 g-4 | productsCard">
+                <p class="text-center w-100" v-if="paginatedProducts.length == 0">此分類沒有商品！</p>
                 <!-- 產品顯示 -->
                 <div class="col | cardContent" v-for="item in paginatedProducts" :key="item.id">
                     <!-- 收藏的愛心 -->

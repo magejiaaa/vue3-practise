@@ -1,11 +1,10 @@
 <template>
-    <UserMenu :needLoginPage="loginPage" :cart="cart" :cartLoadingItem="cartLoadingItem" @navCart="handleNavCart"
-        @menuType="changePage"></UserMenu>
+    <UserMenu :needLoginPage="loginPage" :cart="cart" :cartLoadingItem="cartLoadingItem" @navCart="handleNavCart" @menuType="changePage"></UserMenu>
     <div class="userboardCss">
         <div class="container-fluid">
             <router-view></router-view>
         </div>
-        <FooterBox></FooterBox>
+        <FooterBox @menuType="changePage"></FooterBox>
     </div>
 </template>
 
@@ -24,6 +23,7 @@ export default {
     data() {
         return {
             loginPage: false,
+            localPageName: '',
         };
     },
     provide() {

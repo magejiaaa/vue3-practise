@@ -99,7 +99,7 @@
       </div>
     </div>
   </div>
-  <FooterBox></FooterBox>
+  <FooterBox @menuType="localType"></FooterBox>
 </template>
 
 <script>

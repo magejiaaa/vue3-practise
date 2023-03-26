@@ -8,7 +8,8 @@
 
         <div class="row row-cols-2 row-cols-lg-5 g-4 | productsCard">
             <!-- 產品顯示 -->
-            <div class="col | cardContent" v-for="item in favoriteItem" :key="item.id">
+            <p class="text-center w-100" v-if="totalPages == 0">尚未新增收藏商品！</p>
+            <div class="col | cardContent" v-for="item in paginatedProducts" :key="item.id">
                 <!-- 收藏的愛心 -->
                 <button class="heartPosition" @click="toggleFillHeart(item)">
                     <i class="bi | Favorite" :class="{ checked: this.isFavorite(item) }"></i>
@@ -78,7 +79,7 @@ export default {
 
         paginatedProducts() {
             // 將此頁的資料放在這個陣列
-            return this.filteredProducts.slice(
+            return this.favoriteItem.slice(
                 (this.currentPage - 1) * this.pageSize,
                 this.currentPage * this.pageSize
             );
@@ -129,6 +130,7 @@ export default {
     },
     created() {
         this.getLocalStorage();
+        this.pageType = 'favorite';
     },
 }
 </script>

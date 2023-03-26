@@ -31,11 +31,11 @@
                 </div>
                 <!-- 有登入 -->
                 <div class="col col-lg-2 form-check form-switch | mobileListBtn1" v-else>
-                    <input class="form-check-input" type="checkbox" id="is_paid" v-model="item.is_paid"
+                    <input class="form-check-input" type="checkbox" :id="item.id" v-model="item.is_paid"
                         @click="changePaid(item)">
-                    <label class="form-check-label" for="is_paid" v-if="item.is_paid">已付款
+                    <label class="form-check-label" :for="item.id" v-if="item.is_paid">已付款
                     </label>
-                    <label class="form-check-label" for="is_paid" v-else>未付款
+                    <label class="form-check-label" :for="item.id" v-else>未付款
                     </label>
                 </div>
                 <!-- 編輯 -->
@@ -63,7 +63,7 @@ import DelModal from '../components/DelModal.vue';
 import Toast from '../components/ToastMessages.vue';
 import Pages from '../components/PagesList.vue';
 
-import { mapState, mapActions, mapWritableState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import statusStore from '@/stores/statusStore';
 import productStore from '@/stores/productStore';
 
@@ -93,7 +93,7 @@ export default {
     inject: ['emitter'],
     computed: {
         ...mapState(productStore, ['AllProducts']),
-        ...mapWritableState(statusStore, ['pageType']),
+        ...mapState(statusStore, ['pageType']),
     },
     methods: {
         ...mapActions(productStore, ['getAllProducts']),
