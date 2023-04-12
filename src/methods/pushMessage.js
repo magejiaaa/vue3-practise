@@ -7,7 +7,7 @@ export default function (response, title = '更新') {
             title: `${title}成功`,
         })
     } else {
-        // // 有些訊息是字串，有些則是陣列，在此統一格式
+        // 有些訊息是字串，有些則是陣列，在此統一格式，是字串的話轉陣列
         const message = typeof response.data.message === 'string'
             ? [response.data.message] : response.data.message;
         emitter.emit('push-message', {

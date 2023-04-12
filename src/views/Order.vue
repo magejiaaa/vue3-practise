@@ -100,7 +100,13 @@ export default {
         ...mapActions(statusStore, ['pushMessage']),
         getOrders(pages = 1) {
             this.pages = pages;
-            const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${pages}`;
+            let api = ``;
+            if (this.loginState) {
+                api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${pages}`;
+            } else {
+                api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/orders?page=${pages}`;
+            }
+            // const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${pages}`;
             this.isLoading = true;
             // 第一個是路徑 第二個是送出的資料
             this.$http.get(api)
@@ -184,6 +190,7 @@ export default {
     },
     created() {
         if (this.pageType === 'order') {
+            // dashboard傳進來的
             if (!this.loginState) {
                 this.$router.push('/login');
             }

@@ -200,8 +200,11 @@ export default {
         }),
         getOriginPrice() {
             // 取得訂單折扣前價格
+            // 取得所有this.order.products的值轉成陣列
             const productsArr = Object.values(this.order.products);
+            // 將每個產品的total取出來
             const orderPriceArr = productsArr.map(el => el.total);
+            // 累加並從0開始
             return orderPriceArr.reduce((a, b) => a + b, 0);
         }
     },

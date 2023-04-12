@@ -60,7 +60,7 @@ export default {
         // console.log(token);
         // 在header裡面放全域HTTP請求token
         this.$http.defaults.headers.common.Authorization = token;
-        // 驗證到沒登入就跳轉
+        // 驗證到沒登入就跳轉(X) => 改成在子組件跳轉
         if (this.pageType && (this.pageType.includes('product') || this.pageType.includes('order') || this.pageType.includes('coupon'))) {
             const api = `${process.env.VUE_APP_API}api/user/check`;
             this.$http.post(api, this.user)
@@ -71,6 +71,7 @@ export default {
                     // }
                 });
         }
+        // 查看登入狀態
         this.loginState = Boolean(this.$route.query.loginState);
         this.getCart();
     }
